@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -16,31 +16,32 @@ class DashboardController extends Controller
 
         // Arahkan ke view atau logika masing-masing role
         if ($user->role === 'admin') {
-            return view('dashboard.admin', compact('user'));
+            return $this->adminDashboard();
         } elseif ($user->role === 'kaprodi') {
-            return view('dashboard.kaprodi', compact('user'));
+            return $this->kaprodiDashboard();
         } elseif ($user->role === 'dosen') {
-            return view('dashboard.dosen', compact('user'));
+            return $this->dosenDashboard();
         }
 
         // Jika role tidak dikenali, lakukan logout
         Auth::logout();
+
         return redirect()->route('login')->withErrors(['email' => 'Role akun tidak valid.']);
     }
 
-    // (Opsional) Method khusus jika ingin memisahkan fungsi controller per role
+    // Method khusus per role
     public function adminDashboard()
     {
-        return view('dashboard.admin');
+        return view('Admin.AdminDashboard', ['user' => Auth::user()]);
     }
 
     public function kaprodiDashboard()
     {
-        return view('dashboard.kaprodi');
+        return view('Kaprodi.Dashboard', ['user' => Auth::user()]);
     }
 
     public function dosenDashboard()
     {
-        return view('dashboard.dosen');
+        return view('Dosen.Dashboard', ['user' => Auth::user()]);
     }
 }

@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Admin\DashboardController; // Tambahkan \Admin
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Admin\DashboardController;
+
 
 Route::get('/', function () {
     return view('welcome');

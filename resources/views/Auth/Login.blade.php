@@ -133,6 +133,9 @@
                         </button>
                     </div>
 
+                    <!-- Notifikasi flash (mis. "Akun berhasil dibuat") -->
+                    @include('partials.alert')
+
                     <!-- Login Form (Laravel Route & CSRF) -->
                     <form method="POST" action="{{ route('login') }}" class="space-y-4">
                         @csrf
@@ -213,5 +216,6 @@
         <p>&copy; 2026 Smart Learning Analytics • Fakultas Ilmu Komputer. Hak Cipta Dilindungi Undang-Undang.</p>
     </footer>
 
+@stack('flash-alert-script')
 </body>
 </html>

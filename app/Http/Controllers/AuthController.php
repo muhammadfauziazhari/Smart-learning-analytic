@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User; // Pastikan Model User di-import
+use Illuminate\Support\Facades\Hash; // Pastikan Model User di-import
 
 class AuthController extends Controller
 {
     // 1. Menampilkan halaman form login
     public function showLoginForm()
     {
-        return view('Auth.login');
+        return view('Auth.Login');
     }
 
     // 2. Memproses submit form login
@@ -42,6 +42,7 @@ class AuthController extends Controller
 
             // Jika role tidak dikenali
             Auth::logout();
+
             return back()->withErrors(['email' => 'Role akun tidak valid.']);
         }
 
@@ -56,7 +57,7 @@ class AuthController extends Controller
     // 3. Menampilkan halaman form register
     public function showRegisterForm()
     {
-        return view('Auth.register');
+        return view('Auth.Register');
     }
 
     // 4. Memproses submit form register
@@ -78,18 +79,10 @@ class AuthController extends Controller
             'role' => $validatedData['role'],
         ]);
 
-        // (Opsional) Langsung login-kan user setelah berhasil register
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        // Redirect sesuai role masing-masing setelah register
-        if ($user->role === 'admin') {
-            return redirect()->intended(route('admin.dashboard'));
-        } elseif ($user->role === 'kaprodi') {
-            return redirect()->intended(route('kaprodi.dashboard'));
-        } else {
-            return redirect()->intended(route('dosen.dashboard'));
-        }
+        // Akun baru harus login manual, jangan langsung di-login-kan
+        return redirect()
+            ->route('login')
+            ->with('success', 'Akun berhasil dibuat. Silakan masuk dengan email '.$user->email.'.');
     }
 
     // 5. Memproses logout

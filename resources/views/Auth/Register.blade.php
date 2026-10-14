@@ -243,5 +243,6 @@
             }
         }
     </script>
+@stack('flash-alert-script')
 </body>
 </html>
