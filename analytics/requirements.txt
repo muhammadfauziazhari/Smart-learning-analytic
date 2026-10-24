@@ -1,0 +1,15 @@
+﻿# Layanan analytics Smart Learning Analytics
+# Install: python -m venv .venv && .venv\Scripts\pip install -r requirements.txt
+
+fastapi>=0.115
+uvicorn[standard]>=0.32
+pydantic>=2.9
+
+# Komputasi
+scikit-learn>=1.5
+numpy>=1.26
+pandas>=2.2
+
+# Testing
+pytest>=8.0
+httpx>=0.27

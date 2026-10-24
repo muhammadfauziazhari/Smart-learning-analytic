@@ -1,63 +1,118 @@
-<<<<<<< HEAD
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Smart Learning Analytics
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem yang mengolah log aktivitas LMS Politeknik Negeri Batam menjadi informasi
+untuk menunjang pembelajaran. Log mentah diubah menjadi statistik, skor risiko,
+dan status Early Warning System (EWS) untuk)Dosen Pengampu dan Kepala Prodi.
 
-## About Laravel
+## Struktur repository
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Repository ini berisi dua aplikasi yang berjalan terpisah:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+smart-learning-analytic/
+├── laravel/        Aplikasi web (portal, impor CSV, dashboard, modul EWS)
+├── analytics/      Layanan komputasi (Engagement Rate, K-Means, skor risiko)
+├── docs/           Dokumen rancangan: FR, use case, ERD
+└── README.md
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Kedua aplikasi **tidak** berbagi database. Layanan analytics tidak pernah
+menghubungi MySQL: Laravel mengirim data agregat lewat HTTP, menerima hasil
+perhitungan, lalu menyimpan sendiri ke database. Dengan begitu aturan bisnis
+dan jejak audit hanya ada di satu tempat.
 
-## Contributing
+```
+Laravel  ──HTTP POST /analyze──>  Analytics (Python)
+Laravel  <────JSON hasil───────  Analytics (Python)
+Laravel  ──simpan ke MySQL─────>  MySQL
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Menjalankan di lokal
 
-## Code of Conduct
+Butuh PHP 8.5, Composer, Node.js, dan Python 3.11+.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 1. Aplikasi Laravel
 
-## Security Vulnerabilities
+```sh
+cd laravel
+composer install
+npm install
+cp .env.example .env         # Windows: copy .env.example .env
+php artisan key:generate
+php artisan migrate
+npm run build
+php artisan serve
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 2. Layanan analytics
 
-## License
+```sh
+cd analytics
+python -m venv .venv
+.venv\Scripts\pip install -r requirements.txt   # Linux/macOS: .venv/bin/pip
+.venv\Scripts\uvicorn app.main:app --port 8001  # Linux/macOS: .venv/bin/uvicorn ...
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-=======
-# Smart-learning-analytic
-Smart Learning Analytics PBL Polibatam - Semester 3.
->>>>>>> c27a7386a7aeaf2426bfd8ab65899597a89f29de
+Dokumentasi API ada otomatis di <http://127.0.0.1:8001/docs>.
+
+### 3. Cek koneksi antar kedua aplikasi
+
+```sh
+cd laravel
+php artisan analytics:ping
+```
+
+Keluarannya `Layanan hidup.` kalau keduanya sudah terhubung.
+
+## Kontrak API
+
+| Endpoint | Keterangan |
+|---|---|
+| `GET /health` | Cek kesiapan layanan, dipakai `analytics:ping` |
+| `POST /analyze` | Hitung analitik satu batch import (maks. 20.000 mahasiswa) |
+
+Laravel mengirim agregat satu baris per mahasiswa-per-kelas-periode:
+
+```json
+{
+  "batch_id": 123,
+  "period": "2026-09",
+  "students": [
+    {
+      "mahasiswa_id": 1,
+      "kelas_id": 5,
+      "metrics": {
+        "total_log": 300,
+        "days_active": 30,
+        "days_in_period": 30,
+        "upload_count": 20,
+        "assignment_done": 20,
+        "quiz_done": 20,
+        "discussion_count": 30,
+        "avg_session_minutes": 60.0
+      }
+    }
+  ]
+}
+```
+
+## Pengujian
+
+```sh
+cd laravel   && php artisan test      # 31 test
+cd analytics && .venv\Scripts\python.exe -m pytest tests -q   # 31 test
+```
+
+## Peran pengguna
+
+| Peran | Cakupan |
+|---|---|
+| Admin | Kelola akun dan data master, impor log LMS, atur threshold EWS |
+| Dosen | Analitik kelas yang ia ampu, quick action ke mahasiswa |
+| Kepala Prodi | Analitik makro prodi yang diampu, performa dosen |
+
+## Catatan untuk deploy
+
+Folder `analytics/` tidak ikut ter-upload ke hosting. Saat `composer install
+--optimize-autoloader` di server, folder itu sudah terpisah dari `laravel/`,
+jadi cukup menyalin isi `laravel/` saja.
