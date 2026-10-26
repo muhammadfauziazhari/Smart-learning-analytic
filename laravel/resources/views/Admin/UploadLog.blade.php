@@ -1,16 +1,16 @@
 {{-- Halaman Upload Log Aktivitas CSV (FR-02, FR-06) --}}
 
-<div class="space-y-6">
+<div class="space-y-6 rounded-3xl bg-slate-100 p-5 lg:p-7">
 
     <!-- Judul -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
-            <h2 class="text-xl font-bold text-white">Upload Log Aktivitas</h2>
-            <p class="text-xs text-slate-400 mt-0.5">Unggah file CSV berisi log aktivitas mahasiswa dan dosen.</p>
+            <h2 class="text-2xl font-extrabold text-[#0B1B3D]">Upload Log Aktivitas</h2>
+            <p class="text-sm text-blue-600 mt-1">Unggah file CSV berisi log aktivitas mahasiswa dan dosen.</p>
         </div>
         <a href="{{ route('admin.logs.index') }}"
-            class="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-2">
-            <i class="fa-solid fa-clock-rotate-left"></i>
+            class="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 hover:border-blue-300 hover:bg-blue-50 px-4 py-2 text-xs font-semibold text-slate-600 hover:text-blue-700 shadow-sm transition-all">
+            <i class="fa-solid fa-clock-rotate-left text-amber-500"></i>
             Riwayat Import
         </a>
     </div>
@@ -18,77 +18,79 @@
     <form id="uploadLogForm" action="{{ route('admin.logs.import') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
         @csrf
         @error('file_csv')
-            <div role="alert" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+            <div role="alert" class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
                 {{ $message }}
             </div>
         @enderror
 
         <!-- AREA UPLOAD -->
         <div id="dropZone"
-            class="border-2 border-dashed border-slate-800 rounded-2xl bg-slate-900/40 p-10 text-center transition-colors duration-200 hover:border-indigo-500/50 cursor-pointer">
+            class="border-2 border-dashed border-slate-300 rounded-2xl bg-white p-10 text-center shadow-sm transition-colors duration-200 hover:border-blue-400 hover:bg-blue-50/40 cursor-pointer">
             <input type="file" name="file_csv" id="fileInput" accept=".csv,text/csv" class="hidden">
 
             <div id="dropZoneEmpty">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-indigo-600/10 flex items-center justify-center mb-3">
-                    <i class="fa-solid fa-cloud-arrow-up text-2xl text-indigo-400"></i>
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-amber-400 to-amber-300 flex items-center justify-center mb-3 shadow-lg shadow-amber-500/20">
+                    <i class="fa-solid fa-cloud-arrow-up text-2xl text-[#0B1B3D]"></i>
                 </div>
-                <p class="text-sm font-semibold text-white">Klik atau seret file CSV ke sini</p>
-                <p class="text-xs text-slate-400 mt-1">Format .csv. Header baris pertama otomatis dijadikan nama kolom.</p>
+                <p class="text-sm font-bold text-[#0B1B3D]">Klik atau seret file CSV ke sini</p>
+                <p class="text-xs text-slate-500 mt-1">Format .csv. Header baris pertama otomatis dijadikan nama kolom.</p>
             </div>
 
             <div id="dropZoneFilled" class="hidden">
                 <div class="flex items-center justify-center space-x-3">
-                    <i class="fa-solid fa-file-csv text-2xl text-emerald-400"></i>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
+                        <i class="fa-solid fa-file-csv text-2xl text-emerald-600"></i>
+                    </div>
                     <div class="text-left">
-                        <p id="fileName" class="text-sm font-semibold text-white"></p>
-                        <p id="fileMeta" class="text-xs text-slate-400 mt-0.5"></p>
+                        <p id="fileName" class="text-sm font-bold text-[#0B1B3D]"></p>
+                        <p id="fileMeta" class="text-xs text-slate-500 mt-0.5"></p>
                     </div>
                 </div>
-                <p class="text-xs text-slate-500 mt-3">Klik untuk memilih file lain</p>
+                <p class="text-xs text-slate-400 mt-3">Klik untuk memilih file lain</p>
             </div>
         </div>
 
         <!-- RINGKASAN FILE -->
         <div id="summaryPanel" class="hidden grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
-                <p class="text-[11px] uppercase tracking-wider text-slate-500">Total Baris</p>
-                <p id="statRows" class="text-xl font-bold text-white mt-1">0</p>
+            <div class="bg-[#0B1B3D] text-white rounded-2xl p-4 shadow-md">
+                <p class="text-[11px] uppercase tracking-wider text-slate-300">Total Baris</p>
+                <p id="statRows" class="text-2xl font-extrabold mt-1">0</p>
             </div>
-            <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
-                <p class="text-[11px] uppercase tracking-wider text-slate-500">Jumlah Kolom</p>
-                <p id="statCols" class="text-xl font-bold text-white mt-1">0</p>
+            <div class="bg-blue-600 text-white rounded-2xl p-4 shadow-md">
+                <p class="text-[11px] uppercase tracking-wider text-blue-100">Jumlah Kolom</p>
+                <p id="statCols" class="text-2xl font-extrabold mt-1">0</p>
             </div>
-            <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
-                <p class="text-[11px] uppercase tracking-wider text-slate-500">Pemisah Kolom</p>
-                <p id="statDelim" class="text-xl font-bold text-white mt-1">-</p>
+            <div class="bg-gradient-to-br from-amber-300 to-amber-400 text-[#0B1B3D] rounded-2xl p-4 shadow-md">
+                <p class="text-[11px] uppercase tracking-wider font-semibold">Pemisah Kolom</p>
+                <p id="statDelim" class="text-2xl font-extrabold mt-1">-</p>
             </div>
-            <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-md">
                 <p class="text-[11px] uppercase tracking-wider text-slate-500">Status Validasi</p>
-                <p id="statStatus" class="text-xl font-bold text-white mt-1">-</p>
+                <p id="statStatus" class="text-2xl font-extrabold text-[#0B1B3D] mt-1">-</p>
             </div>
         </div>
 
         <!-- CATATAN VALIDASI -->
-        <div id="validationPanel" class="hidden rounded-xl border border-amber-600/40 bg-amber-500/5 p-4">
+        <div id="validationPanel" class="hidden rounded-xl border border-amber-300 bg-amber-50 p-4">
             <div class="flex items-start space-x-3">
-                <i class="fa-solid fa-triangle-exclamation text-amber-400 mt-0.5"></i>
+                <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5"></i>
                 <div class="flex-1">
-                    <p id="validationTitle" class="text-sm font-semibold text-amber-300"></p>
-                    <ul id="validationList" class="mt-2 space-y-1 text-xs text-amber-200/80 list-disc pl-4"></ul>
+                    <p id="validationTitle" class="text-sm font-bold text-amber-800"></p>
+                    <ul id="validationList" class="mt-2 space-y-1 text-xs text-amber-700 list-disc pl-4"></ul>
                 </div>
             </div>
         </div>
 
         <!-- TABEL PREVIEW -->
-        <div id="previewPanel" class="hidden rounded-2xl border border-slate-800 overflow-hidden">
-            <div class="flex items-center justify-between px-5 py-3 border-b border-slate-800 bg-slate-900/60">
-                <p class="text-sm font-semibold text-white">Preview Data</p>
+        <div id="previewPanel" class="hidden rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+            <div class="flex flex-wrap items-center justify-between gap-2 px-5 py-4 border-b border-slate-100">
+                <p class="text-sm font-bold text-[#0B1B3D]">Preview Data</p>
                 <p id="previewNote" class="text-xs text-slate-500"></p>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-xs">
-                    <thead id="previewHead" class="bg-slate-900 text-slate-400 uppercase tracking-wider"></thead>
-                    <tbody id="previewBody" class="divide-y divide-slate-800"></tbody>
+                    <thead id="previewHead" class="bg-slate-50 text-slate-500 uppercase tracking-wider"></thead>
+                    <tbody id="previewBody" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
         </div>
@@ -96,11 +98,11 @@
         <!-- AKSI -->
         <div id="actionPanel" class="hidden flex items-center justify-end space-x-3">
             <button type="button" id="btnReset"
-                class="px-4 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white bg-slate-900 border border-slate-800 transition-all">
+                class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 hover:border-slate-300 transition-all">
                 Batalkan
             </button>
             <button type="submit" id="btnSubmit"
-                class="px-5 py-2.5 rounded-xl text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-600/20 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none">
+                class="px-6 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#0F3277] hover:bg-[#0B255B] transition-all shadow-md hover:shadow-lg shadow-blue-950/20 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none">
                 <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i>
                 Simpan ke Database
             </button>
@@ -112,14 +114,14 @@
     </form>
 
     <!-- RIWAYAT UPLOAD (contoh) -->
-    <div class="rounded-2xl border border-slate-800 overflow-hidden">
-        <div class="flex items-center justify-between px-5 py-3 border-b border-slate-800 bg-slate-900/60">
-            <p class="text-sm font-semibold text-white">Riwayat Upload</p>
-            <span class="text-[10px] uppercase tracking-wider bg-slate-800 text-slate-400 px-2 py-1 rounded-md">Contoh data</span>
+    <div class="rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+            <p class="text-sm font-bold text-[#0B1B3D]">Riwayat Upload</p>
+            <span class="text-[10px] uppercase tracking-wider bg-slate-100 text-slate-500 px-2 py-1 rounded-md">Contoh data</span>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-xs">
-                <thead class="bg-slate-900 text-slate-400 uppercase tracking-wider">
+                <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider">
                     <tr>
                         <th class="text-left font-medium px-5 py-3">File</th>
                         <th class="text-left font-medium px-5 py-3">Baris</th>
@@ -128,27 +130,27 @@
                         <th class="text-left font-medium px-5 py-3">Status</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800 text-slate-300">
-                    <tr>
-                        <td class="px-5 py-3">log_aktivitas_maret.csv</td>
+                <tbody class="divide-y divide-slate-100 text-slate-700">
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-5 py-3 font-medium"><i class="fa-solid fa-file-csv text-emerald-500 mr-2"></i>log_aktivitas_maret.csv</td>
                         <td class="px-5 py-3">1.204</td>
-                        <td class="px-5 py-3">01 Sep 2026, 08:12</td>
-                        <td class="px-5 py-3">admin</td>
-                        <td class="px-5 py-3"><span class="text-emerald-400">Berhasil</span></td>
+                        <td class="px-5 py-3 text-slate-500">01 Sep 2026, 08:12</td>
+                        <td class="px-5 py-3 text-slate-500">admin</td>
+                        <td class="px-5 py-3"><span class="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600">Berhasil</span></td>
                     </tr>
-                    <tr>
-                        <td class="px-5 py-3">log_aktivitas_februari.csv</td>
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-5 py-3 font-medium"><i class="fa-solid fa-file-csv text-emerald-500 mr-2"></i>log_aktivitas_februari.csv</td>
                         <td class="px-5 py-3">1.178</td>
-                        <td class="px-5 py-3">01 Agu 2026, 07:55</td>
-                        <td class="px-5 py-3">admin</td>
-                        <td class="px-5 py-3"><span class="text-emerald-400">Berhasil</span></td>
+                        <td class="px-5 py-3 text-slate-500">01 Agu 2026, 07:55</td>
+                        <td class="px-5 py-3 text-slate-500">admin</td>
+                        <td class="px-5 py-3"><span class="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600">Berhasil</span></td>
                     </tr>
-                    <tr>
-                        <td class="px-5 py-3">log_aktivitas_januari.csv</td>
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-5 py-3 font-medium"><i class="fa-solid fa-file-csv text-amber-500 mr-2"></i>log_aktivitas_januari.csv</td>
                         <td class="px-5 py-3">0</td>
-                        <td class="px-5 py-3">01 Jan 2026, 09:02</td>
-                        <td class="px-5 py-3">admin</td>
-                        <td class="px-5 py-3"><span class="text-amber-400">Gagal - format kolom</span></td>
+                        <td class="px-5 py-3 text-slate-500">01 Jan 2026, 09:02</td>
+                        <td class="px-5 py-3 text-slate-500">admin</td>
+                        <td class="px-5 py-3"><span class="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[11px] font-semibold text-amber-600">Gagal - format kolom</span></td>
                     </tr>
                 </tbody>
             </table>
@@ -322,7 +324,7 @@
                 const shownRows = dataRows.slice(0, MAX_PREVIEW_ROWS);
                 previewBody.innerHTML = shownRows.map(function (row) {
                     return '<tr>' + shownCols.map(function (_, i) {
-                        return '<td class="px-4 py-3 whitespace-nowrap text-slate-300">' + escapeHtml(row[i] === undefined ? '' : row[i]) + '</td>';
+                        return '<td class="px-4 py-3 whitespace-nowrap text-slate-700">' + escapeHtml(row[i] === undefined ? '' : row[i]) + '</td>';
                     }).join('') + '</tr>';
                 }).join('');
 
@@ -376,7 +378,7 @@
                     statCols.textContent = rows.length ? rows[0].length : 0;
                     statDelim.textContent = DELIM_NAMES[delimiter] || '-';
                     statStatus.textContent = errors.length === 0 ? 'Valid' : 'Perlu Perhatian';
-                    statStatus.className = 'text-xl font-bold mt-1 ' + (errors.length === 0 ? 'text-emerald-400' : 'text-amber-400');
+                    statStatus.className = 'text-2xl font-extrabold mt-1 ' + (errors.length === 0 ? 'text-emerald-600' : 'text-amber-600');
 
                     showValidation(errors);
                     renderPreview(rows);
@@ -389,7 +391,7 @@
                     showValidation(['File gagal dibaca. Coba pilih ulang file.']);
                     summaryPanel.classList.remove('hidden');
                     statStatus.textContent = 'Gagal Dibaca';
-                    statStatus.className = 'text-xl font-bold mt-1 text-red-400';
+                    statStatus.className = 'text-2xl font-extrabold mt-1 text-rose-600';
                 };
                 reader.readAsText(file);
             }
@@ -407,14 +409,14 @@
             ['dragenter', 'dragover'].forEach(function (evt) {
                 dropZone.addEventListener(evt, function (event) {
                     event.preventDefault();
-                    dropZone.classList.add('border-indigo-500', 'bg-indigo-500/5');
+                    dropZone.classList.add('border-blue-600', 'bg-blue-50');
                 });
             });
 
             ['dragleave', 'drop'].forEach(function (evt) {
                 dropZone.addEventListener(evt, function (event) {
                     event.preventDefault();
-                    dropZone.classList.remove('border-indigo-500', 'bg-indigo-500/5');
+                    dropZone.classList.remove('border-blue-600', 'bg-blue-50');
                 });
             });
 
