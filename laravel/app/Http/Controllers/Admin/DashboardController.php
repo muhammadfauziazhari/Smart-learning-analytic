@@ -117,9 +117,9 @@ class DashboardController extends Controller
 
         $rekapTugas = $this->rekapTugas->untuk($user, $filterTabel);
 
-        // Engagement dan level risiko sudah dihitung untuk tab Dashboard.
+        // Engagement, klaster, dan risiko sudah dihitung untuk tab Dashboard.
         // Disampaikan lewat peta NIM supaya tab Keaktifan tidak memanggil
-        // layanan analytics kedua kali hanya untuk dua kolom.
+        // layanan analytics kedua kali.
         $keaktifan = $this->statistikKeaktifan->untuk(
             $user,
             $filterTabel + [
@@ -146,7 +146,7 @@ class DashboardController extends Controller
      * senyap.
      *
      * @param  array<string, mixed>  $statistik
-     * @return array<string, array{engagement: ?float, level: ?string, risk: ?float}>
+     * @return array<string, array{engagement: ?float, klaster: ?string, level: ?string, risk: ?float}>
      */
     private function petaAnalitik(array $statistik): array
     {
@@ -156,6 +156,7 @@ class DashboardController extends Controller
             foreach ($kelas['mahasiswa'] ?? [] as $mhs) {
                 $peta['_'.$mhs['nim']] = [
                     'engagement' => $mhs['engagement'] ?? null,
+                    'klaster' => $mhs['klaster'] ?? null,
                     'level' => $mhs['level'] ?? null,
                     'risk' => $mhs['risk'] ?? null,
                 ];

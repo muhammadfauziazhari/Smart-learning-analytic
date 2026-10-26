@@ -36,10 +36,10 @@ use Illuminate\Support\Facades\DB;
  * dari RekapTugas, jadi tab Keaktifan dan tab Pengumpulan Tugas tidak
  * mungkin punya definisi tenggat yang berbeda.
  *
- * Engagement dan status EWS juga bukan dihitung di sini. Keduanya milik
- * layanan analytics dan sudah dihitung untuk tab Dashboard; service ini
- * hanya menerimanya lewat `$petaAnalitik`. Kalau layanan mati, angkanya
- * tetap "—" dan alasannya sudah dinyatakan di tab Dashboard.
+ * Engagement, klaster, dan risiko juga bukan dihitung di sini. Ketiganya
+ * milik layanan analytics dan sudah dihitung untuk tab Dashboard; service
+ * ini hanya menerimanya lewat `$petaAnalitik`. Status EWS diturunkan dari
+ * level/skor risiko. Kalau layanan mati, hasil analitik tetap tidak tersedia.
  */
 class StatistikKeaktifan
 {
@@ -64,9 +64,9 @@ class StatistikKeaktifan
 
     /**
      * @param  array{mata_kuliah?: ?string, jenis?: ?string, asal?: ?string, kelas_id?: ?int, q?: ?string, dari?: ?string, sampai?: ?string}  $filter
-     * @param  array<string, array{engagement: ?float, level: ?string, risk: ?float}>  $petaAnalitik  Data per mahasiswa dari
-     *                                                                                                tab Dashboard (kunci berawalan "_"). Kalau kosong,
-     *                                                                                                kolom analitik tampil "—".
+     * @param  array<string, array{engagement: ?float, klaster?: ?string, level: ?string, risk: ?float}>  $petaAnalitik  Data per mahasiswa dari
+     *                                                                                                                  tab Dashboard (kunci berawalan "_"). Kalau kosong,
+     *                                                                                                                  kolom analitik tampil "—".
      * @return array<string, mixed>
      */
     public function untuk(User $dosen, array $filter = [], array $petaAnalitik = []): array
@@ -126,6 +126,7 @@ class StatistikKeaktifan
                 'terlambat' => $k['terlambat'],
                 'tidak' => $k['tidak'],
                 'engagement' => $analitik['engagement'] ?? null,
+                'klaster' => $analitik['klaster'] ?? null,
                 'level' => $analitik['level'] ?? null,
                 'risk' => $analitik['risk'] ?? null,
                 'ews' => $this->statusEws($analitik),

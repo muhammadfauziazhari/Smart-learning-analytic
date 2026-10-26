@@ -36,7 +36,7 @@
 
 <div @class(['relative shrink-0', $ukuran])>
     <svg viewBox="0 0 42 42" class="w-full h-full" aria-hidden="true">
-        <circle cx="21" cy="21" r="15.9155" fill="none" stroke="#1e293b" stroke-width="5"></circle>
+        <circle cx="21" cy="21" r="15.9155" fill="none" stroke="#E2E8F0" stroke-width="5"></circle>
 
         @foreach ($bagian as $s)
             @php
@@ -54,7 +54,7 @@
     </svg>
 
     <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-        <span class="text-2xl font-bold text-white leading-none">{{ $pusat ?? '—' }}</span>
+        <span class="text-xl font-extrabold text-[#0B1B3D] leading-none">{{ $pusat ?? '—' }}</span>
         @if ($bawah)
             <span class="text-[10px] text-slate-500 mt-1 leading-tight">{{ $bawah }}</span>
         @endif

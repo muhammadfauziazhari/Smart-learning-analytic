@@ -255,7 +255,7 @@
 
         {{-- Komponen aktivitas masih bertema gelap: dibungkus panel navy --}}
         @if (($aktivitas['totalAkses'] ?? 0) > 0 || ($aktivitas['login']['hari'] ?? 0) > 0)
-            <div class="rounded-2xl bg-[#0B1B3D] p-5 shadow-sm">
+            <div class="rounded-2xl bg-white p-5 shadow-sm">
                 @include('components.analitik.aktivitas', ['aktivitas' => $aktivitas])
             </div>
         @endif
@@ -356,7 +356,7 @@
         {{-- ------------------------------------------------ per kelas --}}
         {{-- blok-kelas masih bertema gelap: dibungkus panel navy --}}
         @if ($kelas !== [])
-            <section class="rounded-2xl bg-[#0B1B3D] p-5 shadow-sm space-y-6">
+            <section class="rounded-2xl bg-white p-5 shadow-sm space-y-6">
                 <h3 class="text-sm font-bold text-white">Performa Kelas</h3>
                 @foreach ($kelas as $k)
                     @include('components.analitik.blok-kelas', ['k' => $k, 'tagna' => $k['sumberAkses']])

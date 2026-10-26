@@ -260,11 +260,16 @@ class StatistikKeaktifanTest extends TestCase
         $this->mhs('3312501003', 'Bahaya');
 
         $data = $this->keaktifan([], [
-            '_3312501001' => ['engagement' => 0.8, 'level' => 'low', 'risk' => 0.1],
-            '_3312501002' => ['engagement' => 0.4, 'level' => 'medium', 'risk' => 0.45],
-            '_3312501003' => ['engagement' => 0.1, 'level' => 'high', 'risk' => 0.9],
+            '_3312501001' => ['engagement' => 0.8, 'klaster' => 'Sangat Aktif', 'level' => 'low', 'risk' => 0.1],
+            '_3312501002' => ['engagement' => 0.4, 'klaster' => 'Cukup', 'level' => 'medium', 'risk' => 0.45],
+            '_3312501003' => ['engagement' => 0.1, 'klaster' => 'Pasif', 'level' => 'high', 'risk' => 0.9],
         ]);
 
+        $aman = $this->baris($data, '3312501001');
+        $this->assertSame(0.8, $aman['engagement']);
+        $this->assertSame('Sangat Aktif', $aman['klaster']);
+        $this->assertSame(0.1, $aman['risk']);
+        $this->assertSame('low', $aman['ews']['kode']);
         $this->assertSame('hijau', $this->baris($data, '3312501001')['ews']['warna']);
         $this->assertSame('kuning', $this->baris($data, '3312501002')['ews']['warna']);
         $this->assertSame('merah', $this->baris($data, '3312501003')['ews']['warna']);
