@@ -19,3 +19,8 @@ Thumbs.db
 # Cache Vite
 .vite/
 laravel/.vite/
+
+# Data contoh log LMS. TIDAK ikut di-commit: berisi NIM/NIP
+# yang merupakan data pribadi.
+sample-data/
+laravel/sample-data/

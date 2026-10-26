@@ -2,70 +2,88 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    // 1. Menampilkan halaman form login
+    private const BATAS_PERCOBAAN = 5;
+    private const JEDA_PERCOBAAN_DETIK = 60;
+
+    /**
+     * Menampilkan halaman form login.
+     */
     public function showLoginForm()
     {
+        if (Auth::check()) {
+            $rute = $this->ruteDashboard(Auth::user());
+
+            if ($rute !== null) {
+                return redirect()->route($rute);
+            }
+        }
+
         return view('Auth.Login');
     }
 
-    // 2. Memproses submit form login
+    /**
+     * Memproses submit form login.
+     */
     public function login(Request $request)
     {
-        // Validasi input
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        $kredensial = $request->validate([
+            'email' => ['required', 'email', 'max:255'],
             'password' => ['required'],
+        ], [
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.max' => 'Email terlalu panjang.',
+            'password.required' => 'Password wajib diisi.',
         ]);
 
-        // `is_active` ikut jadi syarat. Tanpa baris ini, akun yang
-        // dinonaktifkan Admin lewat Kelola Akun masih bisa masuk.
-        $credentials['is_active'] = true;
+        $kunci = 'login|'.Str::lower($kredensial['email']).'|'.$request->ip();
 
-        // Cek apakah email dan password cocok
-        if (Auth::attempt($credentials, $request->remember)) {
-            // Regenerasi session untuk keamanan (mencegah session fixation)
+        if (RateLimiter::tooManyAttempts($kunci, self::BATAS_PERCOBAAN)) {
+            $detik = RateLimiter::availableIn($kunci);
+
+            throw ValidationException::withMessages([
+                'email' => "Terlalu banyak percobaan login. Coba lagi dalam {$detik} detik.",
+            ]);
+        }
+
+        $kredensial['is_active'] = true;
+
+        if (Auth::attempt($kredensial, $request->boolean('remember'))) {
+            RateLimiter::clear($kunci);
+
             $request->session()->regenerate();
 
             $user = Auth::user();
+            $rute = $this->ruteDashboard($user);
 
-            // Pengecekan role dan redirect ke route masing-masing
-            if ($user->role === 'admin') {
-                return redirect()->intended(route('admin.dashboard'));
-            } elseif ($user->role === 'kaprodi') {
-                return redirect()->intended(route('kaprodi.dashboard'));
-            } elseif ($user->role === 'dosen') {
-                return redirect()->intended(route('dosen.dashboard'));
+            if ($rute === null) {
+                Auth::logout();
+
+                return back()->withErrors(['email' => 'Role akun tidak valid.'])->onlyInput('email');
             }
 
-            // Jika role tidak dikenali
-            Auth::logout();
-
-            return back()->withErrors(['email' => 'Role akun tidak valid.']);
+            return redirect()->intended(route($rute));
         }
 
-        // Password salah ATAU akun dinonaktifkan.
-        //
-        // Pesannya sengaja sama: membedaikan "password salah" dari "akun
-        // dinonaktifkan" memberi attackers informasi tentang akun mana yang
-        // ada di sistem.
+        RateLimiter::hit($kunci, self::JEDA_PERCOBAAN_DETIK);
+
         return back()->withErrors([
             'email' => 'Email atau password yang Anda masukkan salah.',
         ])->onlyInput('email');
     }
 
-    // Pendaftaran mandiri dihapus (keputusan pengguna, 18 Okt 2026).
-    //
-    // Dulu ada showRegisterForm() dan register() di sini: keduanya terbuka
-    // untuk publik dan menerima role 'admin', sehingga siapa pun bisa
-    // membuat akun admin lewat /register. Akun Dosen dan Kaprodi sekarang
-    // hanya dibuat Admin melalui menu Kelola Akun (/admin/akun).
-
-    // Melakukan logout
+    /**
+     * Melakukan logout.
+     */
     public function logout(Request $request)
     {
         Auth::logout();
@@ -73,6 +91,19 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/login')->with('status', 'Anda telah keluar dari sistem.');
+    }
+
+    /**
+     * Nama route dashboard untuk peran pengguna.
+     */
+    private function ruteDashboard(?User $user): ?string
+    {
+        return match ($user?->role) {
+            'admin' => 'admin.dashboard',
+            'kaprodi' => 'kaprodi.dashboard',
+            'dosen' => 'dosen.dashboard',
+            default => null,
+        };
     }
 }

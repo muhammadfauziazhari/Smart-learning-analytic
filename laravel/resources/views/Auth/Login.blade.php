@@ -1,257 +1,361 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full">
+<html lang="id">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk - Edutrack</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduTrack - Smart Learning Analytics Login</title>
 
-    <!-- Fonts: Bricolage Grotesque (judul) + Plus Jakarta Sans (isi) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        display: ['"Bricolage Grotesque"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-                        sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif']
-                    }
-                }
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#061129',
+              navy: '#0B1B3D',
+              blue: '#0F3C8A',
+              accent: '#EBA83A',
+              lightBg: '#F8FAFC'
             }
-        }
-    </script>
-
-    <!-- FontAwesome untuk ikon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Alpine.js untuk Interaktif -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <style>
-        body { -webkit-font-smoothing: antialiased; }
-        .theme-shift { transition: background-color .5s ease, color .3s ease, box-shadow .3s ease, border-color .3s ease; }
-
-        /* Satu momen animasi saat halaman dibuka: batang grafik tumbuh */
-        @keyframes grow { from { transform: scaleY(.15); } to { transform: scaleY(1); } }
-        .bar { transform-origin: bottom; animation: grow .9s cubic-bezier(.2,.8,.2,1) both; }
-        .bar:nth-child(2) { animation-delay: .06s; } .bar:nth-child(3) { animation-delay: .12s; }
-        .bar:nth-child(4) { animation-delay: .18s; } .bar:nth-child(5) { animation-delay: .24s; }
-        .bar:nth-child(6) { animation-delay: .30s; } .bar:nth-child(7) { animation-delay: .36s; }
-        @media (prefers-reduced-motion: reduce) {
-            .bar { animation: none; }
-            .theme-shift { transition: none; }
-        }
-    </style>
-</head>
-<body class="h-full bg-white font-sans text-slate-900"
-      x-data="{
-          role: 'dosen',
-          showPassword: false,
-          roles: {
-              dosen:   { label: 'Dosen',   color: '#2F3CFF', soft: '#ECEEFF', placeholder: 'dosen@univ.ac.id',   desc: 'Lihat keterlibatan mahasiswa di setiap mata kuliah dan temukan yang perlu perhatian lebih awal.' },
-              kaprodi: { label: 'Kaprodi', color: '#8A2BE2', soft: '#F4EBFD', placeholder: 'kaprodi@univ.ac.id', desc: 'Bandingkan tren keterlibatan antar mata kuliah dan angkatan untuk mendukung keputusan program studi.' },
-              admin:   { label: 'Admin',   color: '#008F73', soft: '#E3F6F1', placeholder: 'admin@univ.ac.id',   desc: 'Kelola akun pengguna, sumber data LMS, dan pengaturan analitik.' }
           }
-      }">
+        }
+      }
+    }
+  </script>
 
-<div class="min-h-full flex flex-col lg:flex-row">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+  </style>
+</head>
 
-    <!-- ===================== Kolom kiri: formulir ===================== -->
-    <div class="flex-1 flex flex-col px-6 sm:px-12 lg:px-16 xl:px-24">
+<body class="w-screen h-screen overflow-hidden bg-slate-900 font-sans antialiased">
 
-        <!-- Header -->
-        <header class="flex items-center justify-between py-6">
-            <div class="flex items-center gap-2.5">
-                <div class="theme-shift h-9 w-9 rounded-xl text-white flex items-center justify-center"
-                     :style="`background:${roles[role].color}`">
-                    <i class="fa-solid fa-graduation-cap text-sm"></i>
-                </div>
-                <span class="font-display text-lg font-bold tracking-tight">Edutrack</span>
+  <!-- Main Full Screen Container -->
+  <div class="w-full h-full flex flex-col lg:flex-row overflow-hidden">
+
+    <!-- ============================================================
+         LEFT PANEL: Brand Info & Dashboard Mockup
+         ============================================================ -->
+    <div class="w-full lg:w-1/2 h-full bg-gradient-to-br from-[#060D20] via-[#091738] to-[#0E2352] text-white p-8 lg:p-14 flex flex-col justify-between relative overflow-hidden select-none">
+
+      <!-- Ambient Glow Effects -->
+      <div class="absolute -bottom-20 -left-20 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute top-1/3 -right-20 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <!-- Brand Logo & Title -->
+      <div class="relative z-10 flex items-center gap-3.5">
+        <div class="w-11 h-11 bg-gradient-to-tr from-amber-500 to-amber-300 rounded-2xl flex items-center justify-center text-[#060D20] shadow-lg shadow-amber-500/20">
+          <i class="fa-solid fa-graduation-cap text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-extrabold tracking-tight text-white leading-none">
+            Edu<span class="text-amber-400">Track</span>
+          </h1>
+          <p class="text-xs text-slate-400 font-medium tracking-wide mt-1">Smart Learning Analytics</p>
+        </div>
+      </div>
+
+      <!-- Main Tagline -->
+      <div class="relative z-10 my-auto py-6 max-w-lg">
+        <h2 class="text-3xl lg:text-4xl font-extrabold leading-tight tracking-tight text-white mb-4">
+          Pantau, Pahami,<br />Tingkatkan Pembelajaran
+        </h2>
+        <p class="text-slate-300 text-sm lg:text-base leading-relaxed font-normal opacity-90">
+          EduTrack membantu perguruan tinggi mengelola data pembelajaran dan menganalisis aktivitas mahasiswa secara real-time.
+        </p>
+      </div>
+
+      <!-- Dashboard Illustration Mockup -->
+      <div class="relative z-10 w-full flex justify-center items-end pt-2">
+        <div class="w-full max-w-md relative">
+
+          <!-- Floating Badge -->
+          <div class="absolute -top-6 -right-2 bg-gradient-to-r from-amber-400 to-amber-500 p-2.5 rounded-2xl shadow-xl text-slate-950 flex items-center gap-2 transform rotate-6 z-20">
+            <i class="fa-solid fa-bolt text-xs"></i>
+            <span class="text-[11px] font-bold tracking-wide">Real-time Analytics</span>
+          </div>
+
+          <!-- Decorative Circles -->
+          <div class="absolute top-10 -left-6 w-5 h-5 rounded-full bg-amber-400/80 shadow-md"></div>
+          <div class="absolute -bottom-2 left-10 w-8 h-8 rounded-full border-2 border-amber-400/40"></div>
+
+          <!-- Dashboard Window -->
+          <div class="bg-[#0D1B3E] rounded-2xl p-4 border border-slate-700/60 shadow-2xl backdrop-blur-md relative z-10">
+
+            <!-- Window Title Bar -->
+            <div class="flex items-center gap-1.5 mb-3">
+              <div class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></div>
+              <div class="ml-2 h-2 w-20 bg-slate-700/60 rounded-full"></div>
             </div>
-            <a href="#" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900">
-                Butuh bantuan?
-            </a>
-        </header>
 
-        <!-- Form -->
-        <main class="flex-1 flex items-center">
-            <div class="w-full max-w-[420px] mx-auto py-10">
-
-                <h1 class="font-display text-[40px] leading-[1.05] font-extrabold tracking-tight text-slate-900">
-                    Selamat datang kembali
-                </h1>
-                <p class="mt-3 text-[15px] text-slate-500">Masuk dengan akun universitas Anda.</p>
-
-                <!-- Pemilih peran -->
-                <div class="mt-8" role="tablist" aria-label="Pilih peran">
-                    <div class="grid grid-cols-3 gap-2 text-sm font-semibold">
-                        <template x-for="(r, key) in roles" :key="key">
-                            <button type="button" role="tab" @click="role = key" :aria-selected="role === key"
-                                :style="role === key ? `background:${r.soft}; border-color:${r.color}; color:${r.color}` : ''"
-                                :class="role === key ? '' : 'border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-900'"
-                                class="theme-shift flex items-center justify-center gap-2 rounded-xl border-2 py-2.5 cursor-pointer focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-900/15">
-                                <span class="h-2 w-2 rounded-full" :style="`background:${r.color}`"></span>
-                                <span x-text="r.label"></span>
-                            </button>
-                        </template>
-                    </div>
+            <!-- Dashboard Layout -->
+            <div class="grid grid-cols-3 gap-2.5">
+              <div class="col-span-2 bg-[#132652] rounded-xl p-3 border border-slate-700/40">
+                <div class="flex justify-between items-center mb-3">
+                  <div class="h-2 w-16 bg-slate-400/60 rounded"></div>
+                  <div class="h-2 w-8 bg-amber-400/60 rounded"></div>
                 </div>
+                <svg class="w-full h-20 text-blue-400 overflow-visible" viewBox="0 0 120 40">
+                  <defs>
+                    <linearGradient id="blue-gradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#3B82F6" />
+                      <stop offset="100%" stop-color="#3B82F6" stop-opacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M 0,35 Q 20,15 40,25 T 80,10 T 120,18" stroke="#3B82F6" stroke-width="2.5" fill="none" stroke-linecap="round" />
+                  <path d="M 0,35 Q 20,15 40,25 T 80,10 T 120,18 L 120,40 L 0,40 Z" fill="url(#blue-gradient)" fill-opacity="0.25" />
+                  <circle cx="40" cy="25" r="2.5" fill="#EBA83A" />
+                  <circle cx="80" cy="10" r="2.5" fill="#3B82F6" />
+                </svg>
+              </div>
 
-                <!-- Notifikasi flash (mis. "Akun berhasil dibuat") -->
-                <div class="mt-6">
-                    @include('partials.alert')
+              <div class="col-span-1 bg-[#132652] rounded-xl p-3 border border-slate-700/40 flex flex-col justify-between">
+                <div>
+                  <div class="h-2 w-10 bg-slate-400/60 rounded mb-2"></div>
+                  <div class="text-lg font-bold text-amber-400">98.4%</div>
                 </div>
-
-                <!-- Login Form (Laravel Route & CSRF) -->
-                <form method="POST" action="{{ route('login') }}" class="mt-6 space-y-5">
-                    @csrf
-
-                    <!-- Hidden Input untuk mengirim Role ke Backend jika dibutuhkan -->
-                    <input type="hidden" name="selected_role" :value="role">
-
-                    <!-- Email / NIP Input -->
-                    <div>
-                        <label for="email" class="block text-sm font-semibold text-slate-700 mb-1.5">Email / NIP</label>
-                        <input id="email" type="email" name="email" value="{{ old('email') }}"
-                            :placeholder="roles[role].placeholder" autocomplete="username"
-                            :style="`--c:${roles[role].color}`"
-                            class="theme-shift block w-full h-12 px-4 rounded-xl border-2 border-slate-200 bg-white text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[var(--c)] focus:ring-4 focus:ring-[var(--c)]/15"
-                            required autofocus>
-                        @error('email')
-                            <span class="mt-1.5 flex items-center gap-1.5 text-sm text-rose-600">
-                                <i class="fa-solid fa-circle-exclamation text-xs"></i>{{ $message }}
-                            </span>
-                        @enderror
-                    </div>
-
-                    <!-- Password Input -->
-                    <div>
-                        <div class="flex items-center justify-between mb-1.5">
-                            <label for="password" class="block text-sm font-semibold text-slate-700">Kata sandi</label>
-                            <a href="#" class="theme-shift text-sm font-semibold hover:underline focus:outline-none focus-visible:underline"
-                               :style="`color:${roles[role].color}`">Lupa kata sandi?</a>
-                        </div>
-                        <div class="relative" :style="`--c:${roles[role].color}`">
-                            <input id="password" :type="showPassword ? 'text' : 'password'" name="password" placeholder="Masukkan kata sandi"
-                                autocomplete="current-password"
-                                class="theme-shift block w-full h-12 pl-4 pr-12 rounded-xl border-2 border-slate-200 bg-white text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[var(--c)] focus:ring-4 focus:ring-[var(--c)]/15"
-                                required>
-                            <button type="button" @click="showPassword = !showPassword"
-                                :aria-label="showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'"
-                                class="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 hover:text-slate-700 cursor-pointer focus:outline-none focus-visible:text-slate-900">
-                                <i :class="showPassword ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'" class="text-sm"></i>
-                            </button>
-                        </div>
-                        @error('password')
-                            <span class="mt-1.5 flex items-center gap-1.5 text-sm text-rose-600">
-                                <i class="fa-solid fa-circle-exclamation text-xs"></i>{{ $message }}
-                            </span>
-                        @enderror
-                    </div>
-
-                    <!-- Remember Me -->
-                    <label class="flex items-center gap-2.5 cursor-pointer w-fit">
-                        <input type="checkbox" name="remember"
-                            :style="`accent-color:${roles[role].color}`"
-                            class="h-4 w-4 rounded border-slate-300">
-                        <span class="text-sm text-slate-600">Ingat saya di perangkat ini</span>
-                    </label>
-
-                    <!-- Submit Button -->
-                    <button type="submit"
-                        :style="`background:${roles[role].color}; box-shadow: 0 10px 24px -8px ${roles[role].color}`"
-                        class="theme-shift w-full h-12 rounded-xl text-white text-[15px] font-bold cursor-pointer hover:brightness-110 active:brightness-95 focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-900/20">
-                        Masuk sebagai <span x-text="roles[role].label"></span>
-                    </button>
-                </form>
-
-                <p class="mt-8 text-center text-xs text-slate-500">
-                    Dengan masuk, Anda menyetujui
-                    <a href="#" class="underline underline-offset-2 hover:text-slate-900">Kebijakan Privasi</a>
-                    dan
-                    <a href="#" class="underline underline-offset-2 hover:text-slate-900">Panduan LMS</a>.
-                </p>
+                <div class="space-y-1.5 mt-2">
+                  <div class="h-1.5 w-full bg-slate-600/60 rounded"></div>
+                  <div class="h-1.5 w-4/5 bg-slate-600/60 rounded"></div>
+                  <div class="h-1.5 w-3/5 bg-slate-600/60 rounded"></div>
+                </div>
+              </div>
             </div>
-        </main>
 
-        <!-- Footer -->
-        <footer class="py-6 text-xs text-slate-400">
-            &copy; 2026 Smart Learning Analytics. Fakultas Ilmu Komputer.
-        </footer>
+            <div class="mt-2.5 bg-[#132652] rounded-xl p-2.5 border border-slate-700/40 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs">
+                  <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <div class="h-2 w-24 bg-slate-400/50 rounded"></div>
+              </div>
+              <div class="h-2 w-12 bg-amber-400/80 rounded-full"></div>
+            </div>
+          </div>
+
+          <div class="w-28 h-2 bg-slate-800 mx-auto rounded-b-md"></div>
+          <div class="w-40 h-1 bg-slate-900 mx-auto rounded-b-xl opacity-60"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- ===================== Kolom kanan: panel berwarna (ganti warna sesuai peran) ===================== -->
-    <aside class="theme-shift hidden lg:flex lg:w-[48%] xl:w-1/2 relative overflow-hidden items-center justify-center p-12 text-white"
-           :style="`background:${roles[role].color}`">
+    <!-- ============================================================
+         RIGHT PANEL: Login Form
+         ============================================================ -->
+    <div class="w-full lg:w-1/2 h-full bg-[#F8FAFC] flex flex-col justify-center items-center p-6 sm:p-10 lg:p-16 overflow-y-auto">
+      <div class="w-full max-w-md my-auto space-y-7">
 
-        <!-- Bentuk dekoratif besar -->
-        <div class="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-white/10"></div>
-        <div class="absolute -left-16 bottom-10 h-56 w-56 rounded-[3rem] rotate-12 bg-black/10"></div>
-
-        <div class="relative w-full max-w-lg">
-
-            <p class="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold">
-                <span class="h-1.5 w-1.5 rounded-full bg-[#FFD23F]"></span>
-                Politeknik Negeri Batam
-            </p>
-
-            <h2 class="mt-5 font-display text-[52px] leading-[1.02] font-extrabold tracking-tight">
-                Tahu siapa yang butuh bantuan, sebelum terlambat.
-            </h2>
-            <p class="mt-4 max-w-md text-[15px] leading-relaxed text-white/80" x-text="roles[role].desc"></p>
-
-            <!-- Kolase ilustrasi (statis, hanya contoh tampilan) -->
-            <div class="relative mt-10 h-[290px]" aria-hidden="true">
-
-                <!-- Kartu grafik batang -->
-                <div class="absolute left-0 top-6 w-64 -rotate-3 rounded-2xl bg-white p-5 text-slate-900 shadow-2xl shadow-black/20">
-                    <p class="text-sm font-bold">Keterlibatan mingguan</p>
-                    <p class="text-xs text-slate-500">Teknik Informatika</p>
-                    <div class="mt-4 flex h-24 items-end gap-2">
-                        <div class="bar flex-1 rounded-md bg-[#FFD23F]" style="height:40%"></div>
-                        <div class="bar flex-1 rounded-md bg-[#22D3A0]" style="height:62%"></div>
-                        <div class="bar flex-1 rounded-md bg-[#FF6FB5]" style="height:50%"></div>
-                        <div class="bar flex-1 rounded-md bg-[#FF7A3D]" style="height:78%"></div>
-                        <div class="bar flex-1 rounded-md bg-[#FFD23F]" style="height:66%"></div>
-                        <div class="bar flex-1 rounded-md bg-[#22D3A0]" style="height:92%"></div>
-                        <div class="bar flex-1 rounded-md bg-[#FF6FB5]" style="height:82%"></div>
-                    </div>
-                </div>
-
-                <!-- Kartu donat -->
-                <div class="absolute right-0 top-0 flex w-44 rotate-3 flex-col items-center rounded-2xl bg-[#FFD23F] p-5 text-slate-900 shadow-2xl shadow-black/20">
-                    <div class="relative h-24 w-24 rounded-full"
-                         style="background: conic-gradient(#0F172A 0 64%, #FF7A3D 64% 86%, #ffffff 86% 100%)">
-                        <div class="absolute inset-[18px] flex items-center justify-center rounded-full bg-[#FFD23F]">
-                            <span class="font-display text-xl font-extrabold">64%</span>
-                        </div>
-                    </div>
-                    <p class="mt-3 text-center text-xs font-bold">Aktif di LMS</p>
-                </div>
-
-                <!-- Chip mahasiswa berisiko -->
-                <div class="absolute bottom-4 right-6 flex -rotate-2 items-center gap-3 rounded-2xl bg-[#FF6FB5] px-4 py-3 text-slate-900 shadow-2xl shadow-black/20">
-                    <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-white">
-                        <i class="fa-solid fa-triangle-exclamation text-[#FF3D8B]"></i>
-                    </span>
-                    <div>
-                        <p class="font-display text-lg font-extrabold leading-none">12 mahasiswa</p>
-                        <p class="mt-0.5 text-xs font-semibold">perlu ditindaklanjuti</p>
-                    </div>
-                </div>
-
-                <!-- Chip tren naik -->
-                <div class="absolute bottom-0 left-10 flex rotate-2 items-center gap-2 rounded-full bg-[#22D3A0] px-4 py-2 text-sm font-bold text-slate-900 shadow-xl shadow-black/20">
-                    <i class="fa-solid fa-arrow-trend-up"></i> +18% minggu ini
-                </div>
-            </div>
+        <!-- Header Text -->
+        <div class="space-y-1.5">
+          <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Selamat Datang!</h2>
+          <p class="text-slate-500 text-sm font-medium">Silakan login untuk melanjutkan ke dashboard.</p>
         </div>
-    </aside>
-</div>
 
-@stack('flash-alert-script')
+        <!-- Alert Status / Error Session -->
+        @if (session('status'))
+          <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-medium">
+            {{ session('status') }}
+          </div>
+        @endif
+
+        @if ($errors->any())
+          <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-medium">
+            <ul class="list-disc list-inside space-y-1">
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        @endif
+
+        <!-- Form Login Laravel -->
+        <form id="loginForm" method="POST" action="{{ route('login') }}" class="space-y-5">
+          @csrf
+
+          <!-- Email / Username -->
+          <div class="space-y-1.5">
+            <label for="emailInput" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Email / Username
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                <i class="fa-regular fa-user text-base"></i>
+              </div>
+              <input
+                id="emailInput"
+                name="email"
+                type="email"
+                value="{{ old('email') }}"
+                required
+                placeholder="contoh@kampus.ac.id"
+                class="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F3C8A] focus:border-transparent transition-all shadow-sm">
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="space-y-1.5">
+            <label for="passwordInput" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Password
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                <i class="fa-solid fa-lock text-base"></i>
+              </div>
+              <input
+                id="passwordInput"
+                name="password"
+                type="password"
+                required
+                placeholder="Masukkan password"
+                class="w-full pl-11 pr-11 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F3C8A] focus:border-transparent transition-all shadow-sm">
+              <button
+                type="button"
+                onclick="togglePasswordVisibility()"
+                class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                aria-label="Toggle password visibility">
+                <i id="eyeIcon" class="fa-regular fa-eye text-base"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Remember Me & Forgot Password -->
+          <div class="flex items-center justify-between text-xs pt-0.5">
+            <label class="flex items-center gap-2 cursor-pointer select-none text-slate-600 font-medium">
+              <input
+                type="checkbox"
+                name="remember"
+                class="w-4 h-4 rounded border-slate-300 text-[#0F3C8A] focus:ring-[#0F3C8A] cursor-pointer">
+              <span>Ingat saya</span>
+            </label>
+            <a href="#" class="font-bold text-[#0F3C8A] hover:text-blue-900 hover:underline transition-all">
+              Lupa password?
+            </a>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="w-full bg-[#0F3277] hover:bg-[#0B255B] text-white font-semibold py-3.5 px-4 rounded-xl shadow-md hover:shadow-lg shadow-blue-950/20 transition-all flex items-center justify-center gap-2.5 text-sm transform active:scale-[0.99]">
+            <span>Login</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="relative my-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-slate-200"></div>
+          </div>
+          <div class="relative flex justify-center text-xs">
+            <span class="bg-[#F8FAFC] px-3 text-slate-400 font-medium">atau login sebagai</span>
+          </div>
+        </div>
+
+        <!-- Quick Role Select -->
+        <div class="grid grid-cols-3 gap-3">
+
+          <!-- Dosen Role Card (Biru) -->
+          <button
+            type="button"
+            onclick="selectRole('dosen')"
+            class="relative group flex flex-col items-center justify-center p-4 bg-white border border-slate-200/80 rounded-2xl hover:border-blue-500 hover:bg-blue-50/30 hover:shadow-lg hover:shadow-blue-500/10 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer overflow-hidden">
+            <div class="absolute top-0 inset-x-0 h-1 bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white flex items-center justify-center mb-2 shadow-sm transition-all duration-200">
+              <i class="fa-solid fa-user-tie text-base"></i>
+            </div>
+            <span class="text-xs font-bold text-slate-700 group-hover:text-blue-600 transition-colors">Dosen</span>
+          </button>
+
+          <!-- Admin Role Card (Merah) -->
+          <button
+            type="button"
+            onclick="selectRole('admin')"
+            class="relative group flex flex-col items-center justify-center p-4 bg-white border border-slate-200/80 rounded-2xl hover:border-rose-500 hover:bg-rose-50/30 hover:shadow-lg hover:shadow-rose-500/10 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer overflow-hidden">
+            <div class="absolute top-0 inset-x-0 h-1 bg-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white flex items-center justify-center mb-2 shadow-sm transition-all duration-200">
+              <i class="fa-solid fa-user-gear text-base"></i>
+            </div>
+            <span class="text-xs font-bold text-slate-700 group-hover:text-rose-600 transition-colors">Admin</span>
+          </button>
+
+          <!-- Kaprodi Role Card (Hijau) -->
+          <button
+            type="button"
+            onclick="selectRole('kaprodi')"
+            class="relative group flex flex-col items-center justify-center p-4 bg-white border border-slate-200/80 rounded-2xl hover:border-emerald-500 hover:bg-emerald-50/30 hover:shadow-lg hover:shadow-emerald-500/10 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer overflow-hidden">
+            <div class="absolute top-0 inset-x-0 h-1 bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white flex items-center justify-center mb-2 shadow-sm transition-all duration-200">
+              <i class="fa-solid fa-graduation-cap text-base"></i>
+            </div>
+            <span class="text-xs font-bold text-slate-700 group-hover:text-emerald-600 transition-colors">Kaprodi</span>
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Logic -->
+  <script>
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById('passwordInput');
+      const eyeIcon = document.getElementById('eyeIcon');
+      const isHidden = passwordInput.type === 'password';
+
+      passwordInput.type = isHidden ? 'text' : 'password';
+      eyeIcon.className = isHidden ?
+        'fa-regular fa-eye-slash text-base' :
+        'fa-regular fa-eye text-base';
+    }
+
+    // Fungsi Pengisian Otomatis Sesuai Role
+    function selectRole(roleKey) {
+      const emailInput = document.getElementById('emailInput');
+      const passwordInput = document.getElementById('passwordInput');
+
+      const roleCredentials = {
+        'dosen': {
+          email: 'dosen@polibatam.ac.id',
+          password: 'password123'
+        },
+        'admin': {
+          email: 'admin@polibatam.ac.id',
+          password: 'password123'
+        },
+        'kaprodi': {
+          email: 'kaprodi@polibatam.ac.id',
+          password: 'password123'
+        }
+      };
+
+      if (roleCredentials[roleKey]) {
+        emailInput.value = roleCredentials[roleKey].email;
+        passwordInput.value = roleCredentials[roleKey].password;
+      }
+    }
+  </script>
+
 </body>
+
 </html>

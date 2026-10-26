@@ -25,6 +25,20 @@ class ImportBatch extends Model
 
     public const STATUS_GAGAL = 'gagal';
 
+    /**
+     * Waktu mulai/selesai disimpan sebagai datetime, bukan string, supaya
+     * view bisa memanggil translatedFormat() tanpa error.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'started_at' => 'datetime',
+            'finished_at' => 'datetime',
+        ];
+    }
+
     public function admin(): BelongsTo
     {
         return $this->belongsTo(User::class, 'admin_id');

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack — Smart Learning Analytics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            rapture: '#F8F7F5',
+            milk: '#FAEBD7',
+            caramel: '#E3AF64',
+            cosmic: '#0F1939',
+            oblivion: '#26428B',
+            sapphire: '#516AC8'
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+          },
+          boxShadow: {
+            soft: '0 12px 35px rgba(15, 25, 57, 0.08)'
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen bg-rapture font-sans text-cosmic antialiased">
+  <!-- LOGIN PAGE -->
+  <main id="loginPage" class="min-h-screen p-4 sm:p-6 lg:p-10 flex items-center justify-center">
+    <div class="grid w-full max-w-6xl overflow-hidden rounded-3xl bg-white shadow-soft lg:min-h-[680px] lg:grid-cols-2">
+      <section class="relative flex min-h-[300px] flex-col justify-between overflow-hidden bg-cosmic p-8 text-white sm:p-10 lg:p-12">
+        <div class="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-oblivion/60 blur-sm"></div>
+        <div class="absolute -bottom-24 -left-16 h-72 w-72 rounded-full border-[36px] border-sapphire/40"></div>
+        <div class="relative z-10">
+          <div class="flex items-center gap-3">
+            <div class="grid h-12 w-12 place-items-center rounded-2xl bg-caramel text-cosmic">
+              <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 8 12 3l10 5-10 5L2 8Z"/><path d="M6 10v5c3.5 3 8.5 3 12 0v-5M22 8v6"/></svg>
+            </div>
+            <div>
+              <p class="text-2xl font-extrabold tracking-tight">Edu<span class="text-caramel">Track</span></p>
+              <p class="text-xs tracking-wide text-white/70">SMART LEARNING ANALYTICS</p>
+            </div>
+          </div>
+          <div class="mt-12 max-w-md">
+            <p class="mb-3 inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold text-caramel">Data • Insight • Improvement</p>
+            <h1 class="text-3xl font-extrabold leading-tight sm:text-4xl">Pantau, pahami,<br>tingkatkan pembelajaran.</h1>
+            <p class="mt-4 max-w-sm text-sm leading-6 text-white/70">Ubah aktivitas LMS menjadi insight yang membantu dosen dan program studi mengambil keputusan berbasis data.</p>
+          </div>
+        </div>
+        <div class="relative z-10 mt-10 rounded-2xl border border-white/10 bg-white/[0.06] p-5 backdrop-blur">
+          <div class="mb-4 flex items-center justify-between">
+            <span class="text-sm font-semibold">Aktivitas pembelajaran</span>
+            <span class="rounded-full bg-emerald-400/15 px-2.5 py-1 text-xs font-semibold text-emerald-300">+12,8%</span>
+          </div>
+          <div class="flex h-24 items-end gap-2">
+            <div class="h-[32%] flex-1 rounded-t-md bg-sapphire/80"></div><div class="h-[48%] flex-1 rounded-t-md bg-sapphire/80"></div><div class="h-[40%] flex-1 rounded-t-md bg-sapphire/80"></div><div class="h-[62%] flex-1 rounded-t-md bg-sapphire/80"></div><div class="h-[54%] flex-1 rounded-t-md bg-sapphire/80"></div><div class="h-[82%] flex-1 rounded-t-md bg-caramel"></div><div class="h-[70%] flex-1 rounded-t-md bg-caramel"></div><div class="h-[95%] flex-1 rounded-t-md bg-caramel"></div><div class="h-[76%] flex-1 rounded-t-md bg-sapphire/80"></div><div class="h-[88%] flex-1 rounded-t-md bg-sapphire/80"></div>
+          </div>
+          <div class="mt-3 flex justify-between text-[10px] text-white/50"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+        </div>
+        <p class="relative z-10 mt-5 text-xs text-white/40">© 2026 EduTrack • Platform analitik pembelajaran</p>
+      </section>
+
+      <section class="flex items-center justify-center p-6 sm:p-10 lg:p-14">
+        <div class="w-full max-w-md">
+          <div class="mb-8">
+            <p class="text-sm font-semibold text-sapphire">SELAMAT DATANG</p>
+            <h2 class="mt-2 text-3xl font-extrabold tracking-tight">Masuk ke akun Anda</h2>
+            <p class="mt-2 text-sm text-slate-500">Pilih peran dan masukkan informasi akun untuk melanjutkan.</p>
+          </div>
+
+          <form id="loginForm" class="space-y-5">
+            <div>
+              <label for="role" class="mb-2 block text-sm font-semibold">Masuk sebagai</label>
+              <div class="grid grid-cols-3 gap-2" id="roleChoices">
+                <button type="button" data-role="Dosen" class="role-option rounded-xl border border-caramel bg-milk px-2 py-3 text-sm font-bold text-cosmic transition">
+                  <span class="mb-1 block text-xl">👨‍🏫</span>Dosen
+                </button>
+                <button type="button" data-role="Admin" class="role-option rounded-xl border border-slate-200 bg-white px-2 py-3 text-sm font-semibold text-slate-600 transition hover:border-sapphire">
+                  <span class="mb-1 block text-xl">🛡️</span>Admin
+                </button>
+                <button type="button" data-role="Kaprodi" class="role-option rounded-xl border border-slate-200 bg-white px-2 py-3 text-sm font-semibold text-slate-600 transition hover:border-sapphire">
+                  <span class="mb-1 block text-xl">🎓</span>Kaprodi
+                </button>
+              </div>
+              <input type="hidden" id="role" value="Dosen">
+            </div>
+
+            <div>
+              <label for="email" class="mb-2 block text-sm font-semibold">Email / Username</label>
+              <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 focus-within:border-sapphire focus-within:ring-4 focus-within:ring-sapphire/10">
+                <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2m6-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm8-1 2 2 4-4"/></svg>
+                <input id="email" type="text" required placeholder="nama@kampus.ac.id" class="w-full border-0 bg-transparent py-3.5 text-sm outline-none placeholder:text-slate-400">
+              </div>
+            </div>
+            <div>
+              <div class="mb-2 flex items-center justify-between">
+                <label for="password" class="block text-sm font-semibold">Password</label>
+                <button type="button" id="togglePassword" class="text-xs font-semibold text-sapphire hover:underline">Tampilkan</button>
+              </div>
+              <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 focus-within:border-sapphire focus-within:ring-4 focus-within:ring-sapphire/10">
+                <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2" stroke-width="1.8"/><path stroke-linecap="round" stroke-width="1.8" d="M8 10V7a4 4 0 1 1 8 0v3m-4 5v2"/></svg>
+                <input id="password" type="password" required placeholder="Masukkan password" class="w-full border-0 bg-transparent py-3.5 text-sm outline-none placeholder:text-slate-400">
+              </div>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <label class="flex cursor-pointer items-center gap-2 text-slate-500"><input type="checkbox" class="h-4 w-4 rounded border-slate-300 accent-oblivion"> Ingat saya</label>
+              <a href="#" id="forgotLink" class="font-semibold text-sapphire hover:underline">Lupa password?</a>
+            </div>
+            <p id="loginMessage" class="hidden rounded-xl bg-milk px-4 py-3 text-sm text-cosmic"></p>
+            <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-xl bg-oblivion px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-oblivion/20 transition hover:bg-cosmic focus:outline-none focus:ring-4 focus:ring-sapphire/20">Login <span aria-hidden="true">→</span></button>
+          </form>
+          <p class="mt-6 text-center text-xs leading-5 text-slate-400">Demo UI: formulir ini belum terhubung ke backend autentikasi.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- DASHBOARD -->
+  <div id="dashboardPage" class="hidden min-h-screen bg-rapture">
+    <div class="min-h-screen lg:flex">
+      <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 flex w-64 -translate-x-full flex-col bg-cosmic px-4 py-6 text-white transition-transform duration-300 lg:static lg:translate-x-0">
+        <div class="flex items-center gap-3 px-2">
+          <div class="grid h-10 w-10 place-items-center rounded-xl bg-caramel text-cosmic">🎓</div>
+          <div><p class="text-xl font-extrabold">Edu<span class="text-caramel">Track</span></p><p class="text-[10px] tracking-widest text-white/50">LEARNING ANALYTICS</p></div>
+          <button id="closeSidebar" class="ml-auto text-white/60 lg:hidden" aria-label="Tutup menu">✕</button>
+        </div>
+        <div class="mt-9 px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">Menu utama</div>
+        <nav class="mt-3 space-y-1 text-sm">
+          <a href="#overview" class="nav-link flex items-center gap-3 rounded-xl bg-caramel px-4 py-3 font-semibold text-cosmic"><span>▦</span> Dashboard</a>
+          <a href="#students" class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-white/70 hover:bg-white/10 hover:text-white"><span>♙</span> Mahasiswa</a>
+          <a href="#lecturers" class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-white/70 hover:bg-white/10 hover:text-white"><span>♧</span> Dosen</a>
+          <a href="#classes" class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-white/70 hover:bg-white/10 hover:text-white"><span>▤</span> Kelas</a>
+          <a href="#analytics" class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-white/70 hover:bg-white/10 hover:text-white"><span>⌁</span> LMS Analytics</a>
+          <a href="#reports" class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-white/70 hover:bg-white/10 hover:text-white"><span>▧</span> Laporan</a>
+        </nav>
+        <div class="mt-auto border-t border-white/10 pt-5">
+          <div class="flex items-center gap-3 rounded-xl bg-white/[0.06] p-3">
+            <div class="grid h-10 w-10 place-items-center rounded-full bg-sapphire font-bold">AP</div>
+            <div class="min-w-0 flex-1"><p id="profileName" class="truncate text-sm font-semibold">Andi Pratama</p><p id="profileRole" class="text-xs text-white/50">Dosen</p></div>
+            <button id="logoutBtn" title="Keluar" class="text-white/60 hover:text-caramel">↪</button>
+          </div>
+        </div>
+      </aside>
+      <div id="sidebarOverlay" class="fixed inset-0 z-30 hidden bg-cosmic/40 lg:hidden"></div>
+
+      <div class="min-w-0 flex-1">
+        <header class="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 py-4 backdrop-blur sm:px-7">
+          <div class="flex min-w-0 items-center gap-3">
+            <button id="openSidebar" class="rounded-lg border border-slate-200 px-3 py-2 lg:hidden" aria-label="Buka menu">☰</button>
+            <div class="hidden min-w-0 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 sm:flex sm:w-72">
+              <span class="text-slate-400">⌕</span><input id="globalSearch" placeholder="Cari mahasiswa, kelas..." class="w-full bg-transparent text-xs outline-none">
+            </div>
+          </div>
+          <div class="flex items-center gap-3 sm:gap-5">
+            <button id="notificationBtn" class="relative rounded-xl p-2 text-slate-500 hover:bg-rapture" aria-label="Notifikasi">♧<span class="absolute right-1 top-1 h-2 w-2 rounded-full bg-caramel"></span></button>
+            <div class="hidden text-right sm:block"><p id="todayDate" class="text-xs font-semibold"></p><p class="text-[10px] text-slate-400">Periode data: 7 hari terakhir</p></div>
+            <div class="grid h-9 w-9 place-items-center rounded-full bg-milk text-sm font-extrabold text-oblivion">AP</div>
+          </div>
+        </header>
+
+        <main id="overview" class="mx-auto max-w-[1600px] p-4 sm:p-7">
+          <div class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div><p class="text-sm font-semibold text-sapphire">RINGKASAN ANALITIK</p><h1 class="mt-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Halo, <span id="welcomeName">Andi Pratama</span> 👋</h1><p class="mt-2 text-sm text-slate-500">Berikut ringkasan aktivitas pembelajaran pada LMS kampus Anda.</p></div>
+            <div class="flex flex-wrap gap-2">
+              <select id="classFilter" class="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold outline-none focus:border-sapphire"><option value="Semua Kelas">Semua Kelas</option><option value="Kelas A">Kelas A</option><option value="Kelas B">Kelas B</option><option value="Kelas C">Kelas C</option><option value="Kelas D">Kelas D</option></select>
+              <select id="periodFilter" class="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold outline-none focus:border-sapphire"><option value="7">7 hari terakhir</option><option value="30">30 hari terakhir</option><option value="90">90 hari terakhir</option></select>
+              <button id="exportBtn" class="rounded-xl bg-cosmic px-4 py-2.5 text-xs font-bold text-white transition hover:bg-oblivion">↓ Export laporan</button>
+            </div>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <article class="rounded-2xl bg-cosmic p-5 text-white shadow-soft">
+              <div class="flex items-center justify-between"><span class="text-sm text-white/70">Total Mahasiswa</span><span class="grid h-10 w-10 place-items-center rounded-xl bg-white/10 text-xl">♙</span></div>
+              <div id="studentMetric" class="mt-4 text-3xl font-extrabold">1.248</div><p class="mt-2 text-xs text-emerald-300">↑ 12% <span class="text-white/50">dari periode lalu</span></p>
+            </article>
+            <article class="rounded-2xl bg-oblivion p-5 text-white shadow-soft">
+              <div class="flex items-center justify-between"><span class="text-sm text-white/75">Aktivitas Login LMS</span><span class="grid h-10 w-10 place-items-center rounded-xl bg-white/15 text-xl">↪</span></div>
+              <div id="loginMetric" class="mt-4 text-3xl font-extrabold">1.842</div><p class="mt-2 text-xs text-emerald-200">↑ 18% <span class="text-white/60">dari periode lalu</span></p>
+            </article>
+            <article class="rounded-2xl bg-caramel p-5 text-cosmic shadow-soft">
+              <div class="flex items-center justify-between"><span class="text-sm font-medium text-cosmic/75">Akses Materi</span><span class="grid h-10 w-10 place-items-center rounded-xl bg-white/35 text-xl">▤</span></div>
+              <div id="materialMetric" class="mt-4 text-3xl font-extrabold">3.560</div><p class="mt-2 text-xs font-semibold text-emerald-800">↑ 25% <span class="font-normal text-cosmic/60">dari periode lalu</span></p>
+            </article>
+            <article class="rounded-2xl border border-sapphire/15 bg-white p-5 shadow-soft">
+              <div class="flex items-center justify-between"><span class="text-sm font-medium text-slate-500">Engagement Mahasiswa</span><span class="grid h-10 w-10 place-items-center rounded-xl bg-sapphire/10 text-xl text-sapphire">⌁</span></div>
+              <div id="engagementMetric" class="mt-4 text-3xl font-extrabold">78%</div><p class="mt-2 text-xs font-semibold text-emerald-600">↑ 9% <span class="font-normal text-slate-400">dari periode lalu</span></p>
+            </article>
+          </div>
+
+          <div class="mt-5 grid gap-5 xl:grid-cols-12">
+            <section id="analytics" class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft xl:col-span-6">
+              <div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="font-extrabold">Tren Aktivitas LMS</h2><p class="mt-1 text-xs text-slate-400">Login, akses materi, dan engagement mahasiswa</p></div><span class="rounded-lg bg-rapture px-3 py-1.5 text-[11px] font-semibold text-slate-500">Harian</span></div>
+              <div class="mt-5 h-64"><canvas id="trendChart"></canvas></div>
+            </section>
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft xl:col-span-3">
+              <h2 class="font-extrabold">Distribusi Engagement</h2><p class="mt-1 text-xs text-slate-400">Segmentasi aktivitas mahasiswa</p>
+              <div class="relative mx-auto mt-5 h-52 max-w-[230px]"><canvas id="engagementChart"></canvas><div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"><span id="chartEngagement" class="text-2xl font-extrabold">78%</span><span class="text-[10px] text-slate-400">rata-rata</span></div></div>
+              <div class="mt-4 space-y-3 text-xs">
+                <div class="flex items-center justify-between"><span class="flex items-center gap-2"><i class="h-2.5 w-2.5 rounded-full bg-oblivion"></i>Sangat aktif</span><b>42%</b></div>
+                <div class="flex items-center justify-between"><span class="flex items-center gap-2"><i class="h-2.5 w-2.5 rounded-full bg-sapphire"></i>Aktif</span><b>36%</b></div>
+                <div class="flex items-center justify-between"><span class="flex items-center gap-2"><i class="h-2.5 w-2.5 rounded-full bg-caramel"></i>Cukup aktif</span><b>15%</b></div>
+                <div class="flex items-center justify-between"><span class="flex items-center gap-2"><i class="h-2.5 w-2.5 rounded-full bg-slate-200"></i>Perlu perhatian</span><b>7%</b></div>
+              </div>
+            </section>
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft xl:col-span-3">
+              <div class="flex items-center justify-between"><h2 class="font-extrabold">Aktivitas Terbaru</h2><button id="seeAllActivity" class="text-[11px] font-bold text-sapphire">Lihat semua</button></div>
+              <div id="activityList" class="mt-4 space-y-4">
+                <div class="flex gap-3"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-sapphire/10 text-sapphire">▤</span><div class="min-w-0 flex-1"><p class="text-xs font-semibold">Mahasiswa mengakses materi</p><p class="mt-1 text-[10px] text-slate-400">12 menit yang lalu</p></div><b class="text-xs">42</b></div>
+                <div class="flex gap-3"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-milk text-oblivion">↪</span><div class="min-w-0 flex-1"><p class="text-xs font-semibold">Login LMS</p><p class="mt-1 text-[10px] text-slate-400">28 menit yang lalu</p></div><b class="text-xs">87</b></div>
+                <div class="flex gap-3"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-emerald-50 text-emerald-600">✓</span><div class="min-w-0 flex-1"><p class="text-xs font-semibold">Menyelesaikan tugas</p><p class="mt-1 text-[10px] text-slate-400">1 jam yang lalu</p></div><b class="text-xs">16</b></div>
+                <div class="flex gap-3"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-sapphire/10 text-sapphire">☷</span><div class="min-w-0 flex-1"><p class="text-xs font-semibold">Diskusi forum</p><p class="mt-1 text-[10px] text-slate-400">2 jam yang lalu</p></div><b class="text-xs">24</b></div>
+              </div>
+            </section>
+          </div>
+
+          <div class="mt-5 grid gap-5 xl:grid-cols-12">
+            <section id="classes" class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft xl:col-span-6">
+              <div class="mb-4 flex items-center justify-between"><div><h2 class="font-extrabold">Performa Kelas</h2><p class="mt-1 text-xs text-slate-400">Perbandingan engagement per kelas</p></div><button id="viewClasses" class="text-xs font-bold text-sapphire">Detail →</button></div>
+              <div class="overflow-x-auto"><table class="w-full min-w-[480px] text-left text-xs"><thead class="text-[10px] uppercase tracking-wide text-slate-400"><tr><th class="pb-3 font-semibold">Kelas</th><th class="pb-3 font-semibold">Mata Kuliah</th><th class="pb-3 font-semibold">Engagement</th><th class="pb-3 font-semibold">Status</th></tr></thead><tbody id="classTable" class="divide-y divide-slate-100">
+                <tr><td class="py-3 font-bold">TI-2024-A</td><td class="py-3 text-slate-500">Pemrograman Web</td><td class="py-3"><div class="flex items-center gap-2"><span>92%</span><div class="h-1.5 w-20 rounded-full bg-slate-100"><div class="h-1.5 w-[92%] rounded-full bg-emerald-500"></div></div></div></td><td class="py-3 text-emerald-600">● Baik</td></tr>
+                <tr><td class="py-3 font-bold">TI-2024-B</td><td class="py-3 text-slate-500">Basis Data</td><td class="py-3"><div class="flex items-center gap-2"><span>78%</span><div class="h-1.5 w-20 rounded-full bg-slate-100"><div class="h-1.5 w-[78%] rounded-full bg-emerald-500"></div></div></div></td><td class="py-3 text-emerald-600">● Baik</td></tr>
+                <tr><td class="py-3 font-bold">TI-2024-C</td><td class="py-3 text-slate-500">Struktur Data</td><td class="py-3"><div class="flex items-center gap-2"><span>65%</span><div class="h-1.5 w-20 rounded-full bg-slate-100"><div class="h-1.5 w-[65%] rounded-full bg-caramel"></div></div></div></td><td class="py-3 text-amber-600">● Pantau</td></tr>
+                <tr><td class="py-3 font-bold">TI-2024-D</td><td class="py-3 text-slate-500">Sistem Operasi</td><td class="py-3"><div class="flex items-center gap-2"><span>48%</span><div class="h-1.5 w-20 rounded-full bg-slate-100"><div class="h-1.5 w-[48%] rounded-full bg-rose-400"></div></div></div></td><td class="py-3 text-rose-500">● Rendah</td></tr>
+              </tbody></table></div>
+            </section>
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft xl:col-span-3">
+              <h2 class="font-extrabold">Jam Login LMS</h2><p class="mt-1 text-xs text-slate-400">Distribusi akses berdasarkan jam</p><div class="mt-4 h-52"><canvas id="hourChart"></canvas></div>
+            </section>
+            <section class="rounded-2xl border border-caramel/50 bg-milk/60 p-5 shadow-soft xl:col-span-3">
+              <div class="flex items-center gap-2"><span class="text-xl">💡</span><h2 class="font-extrabold">Insight</h2></div>
+              <p id="insightText" class="mt-3 text-xs leading-6 text-slate-600">Aktivitas mahasiswa meningkat signifikan pada pukul 10.00–14.00. Pertimbangkan untuk menjadwalkan materi interaktif di jam tersebut.</p>
+              <button id="recommendationBtn" class="mt-4 rounded-xl bg-oblivion px-4 py-2.5 text-xs font-bold text-white transition hover:bg-cosmic">Lihat rekomendasi →</button>
+            </section>
+          </div>
+          <p class="mt-6 text-center text-[11px] text-slate-400">EduTrack • Data pada dashboard ini adalah data contoh untuk keperluan demonstrasi UI.</p>
+        </main>
+      </div>
+    </div>
+    <div id="toast" class="fixed bottom-5 right-5 z-50 hidden max-w-sm rounded-xl bg-cosmic px-5 py-4 text-sm text-white shadow-xl"></div>
+  </div>
+
+  <script>
+    const roleButtons = document.querySelectorAll('.role-option');
+    const roleInput = document.getElementById('role');
+    roleButtons.forEach(button => button.addEventListener('click', () => {
+      roleInput.value = button.dataset.role;
+      roleButtons.forEach(item => {
+        item.classList.remove('border-caramel', 'bg-milk', 'font-bold', 'text-cosmic');
+        item.classList.add('border-slate-200', 'bg-white', 'font-semibold', 'text-slate-600');
+      });
+      button.classList.add('border-caramel', 'bg-milk', 'font-bold', 'text-cosmic');
+      button.classList.remove('border-slate-200', 'bg-white', 'font-semibold', 'text-slate-600');
+    }));
+
+    document.getElementById('togglePassword').addEventListener('click', function() {
+      const input = document.getElementById('password');
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      this.textContent = isHidden ? 'Sembunyikan' : 'Tampilkan';
+    });
+
+    const loginPage = document.getElementById('loginPage');
+    const dashboardPage = document.getElementById('dashboardPage');
+    const loginMessage = document.getElementById('loginMessage');
+    let trendChart, engagementChart, hourChart;
+
+    document.getElementById('loginForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      if (!email) return;
+      const role = roleInput.value;
+      const displayName = email.includes('@') ? email.split('@')[0].replace(/[._-]/g, ' ') : email;
+      const formattedName = displayName.replace(/\b\w/g, letter => letter.toUpperCase());
+      document.getElementById('welcomeName').textContent = role === 'Admin' ? 'Administrator' : role === 'Kaprodi' ? 'Kaprodi ' + formattedName : formattedName;
+      document.getElementById('profileName').textContent = formattedName;
+      document.getElementById('profileRole').textContent = role;
+      loginPage.classList.add('hidden');
+      dashboardPage.classList.remove('hidden');
+      document.getElementById('todayDate').textContent = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' }).format(new Date());
+      setTimeout(() => { renderCharts(); }, 50);
+    });
+
+    function renderCharts() {
+      if (trendChart) trendChart.destroy();
+      if (engagementChart) engagementChart.destroy();
+      if (hourChart) hourChart.destroy();
+      const commonOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { usePointStyle: true, boxWidth: 7, font: { family: 'Inter', size: 10 } } } } };
+      trendChart = new Chart(document.getElementById('trendChart'), {
+        type: 'line',
+        data: { labels: ['16 Okt', '17 Okt', '18 Okt', '19 Okt', '20 Okt', '21 Okt', '22 Okt'], datasets: [
+          { label: 'Login', data: [420, 510, 430, 680, 570, 740, 860], borderColor: '#26428B', backgroundColor: 'rgba(38,66,139,.10)', fill: true, tension: .35, pointRadius: 2, borderWidth: 2 },
+          { label: 'Akses materi', data: [250, 300, 270, 360, 330, 390, 470], borderColor: '#E3AF64', backgroundColor: 'rgba(227,175,100,.06)', fill: false, tension: .35, pointRadius: 2, borderWidth: 2 },
+          { label: 'Engagement', data: [180, 220, 205, 280, 250, 315, 340], borderColor: '#516AC8', fill: false, tension: .35, pointRadius: 2, borderWidth: 2 }
+        ]},
+        options: { ...commonOptions, scales: { x: { grid: { display: false }, ticks: { font: { size: 9 } } }, y: { beginAtZero: true, grid: { color: '#eef0f5' }, ticks: { font: { size: 9 } } } } }
+      });
+      engagementChart = new Chart(document.getElementById('engagementChart'), {
+        type: 'doughnut',
+        data: { labels: ['Sangat aktif', 'Aktif', 'Cukup aktif', 'Perlu perhatian'], datasets: [{ data: [42, 36, 15, 7], backgroundColor: ['#26428B', '#516AC8', '#E3AF64', '#E5E7EB'], borderWidth: 0, hoverOffset: 4 }] },
+        options: { ...commonOptions, cutout: '75%', plugins: { legend: { display: false } } }
+      });
+      hourChart = new Chart(document.getElementById('hourChart'), {
+        type: 'bar',
+        data: { labels: ['07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18'], datasets: [{ label: 'Login', data: [70, 110, 160, 145, 220, 280, 245, 190, 170, 250, 220, 150], backgroundColor: '#516AC8', borderRadius: 4, maxBarThickness: 15 }] },
+        options: { ...commonOptions, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { font: { size: 8 } } }, y: { beginAtZero: true, grid: { color: '#eef0f5' }, ticks: { font: { size: 8 } } } } }
+      });
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.remove('hidden');
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => toast.classList.add('hidden'), 3200);
+    }
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      dashboardPage.classList.add('hidden');
+      loginPage.classList.remove('hidden');
+      document.getElementById('password').value = '';
+      document.getElementById('loginForm').reset();
+      roleInput.value = 'Dosen';
+      roleButtons[0].click();
+    });
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const rows = [['Kelas', 'Mata Kuliah', 'Engagement'], ['TI-2024-A', 'Pemrograman Web', '92%'], ['TI-2024-B', 'Basis Data', '78%'], ['TI-2024-C', 'Struktur Data', '65%'], ['TI-2024-D', 'Sistem Operasi', '48%']];
+      const csv = rows.map(row => row.join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'laporan-edutrack.csv';
+      link.click();
+      URL.revokeObjectURL(link.href);
+      showToast('Laporan contoh berhasil disiapkan dalam format CSV.');
+    });
+    document.getElementById('periodFilter').addEventListener('change', event => {
+      const multiplier = event.target.value === '30' ? 4 : event.target.value === '90' ? 12 : 1;
+      document.getElementById('loginMetric').textContent = (1842 * multiplier).toLocaleString('id-ID');
+      document.getElementById('materialMetric').textContent = (3560 * multiplier).toLocaleString('id-ID');
+      showToast('Periode tampilan diubah. Angka yang ditampilkan masih data simulasi.');
+    });
+    document.getElementById('classFilter').addEventListener('change', event => {
+      showToast(event.target.value === 'Semua Kelas' ? 'Menampilkan seluruh kelas.' : 'Filter aktif: ' + event.target.value + '. Hubungkan filter ke data backend untuk hasil nyata.');
+    });
+    document.getElementById('recommendationBtn').addEventListener('click', () => showToast('Rekomendasi: prioritaskan materi interaktif pukul 10.00–14.00 dan pantau kelas dengan engagement di bawah 60%.'));
+    document.getElementById('notificationBtn').addEventListener('click', () => showToast('Tidak ada notifikasi baru.'));
+    document.getElementById('seeAllActivity').addEventListener('click', () => showToast('Halaman riwayat aktivitas dapat ditambahkan pada tahap berikutnya.'));
+    document.getElementById('viewClasses').addEventListener('click', () => showToast('Detail kelas dapat dihubungkan ke halaman analitik kelas.'));
+    document.getElementById('forgotLink').addEventListener('click', event => { event.preventDefault(); loginMessage.textContent = 'Fitur reset password belum terhubung. Silakan hubungkan ke backend autentikasi.'; loginMessage.classList.remove('hidden'); });
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    document.getElementById('openSidebar').addEventListener('click', () => { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); });
+    document.getElementById('closeSidebar').addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+    function closeSidebar() { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
+    document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', () => { if (window.innerWidth < 1024) closeSidebar(); }));
+    document.getElementById('globalSearch').addEventListener('keydown', event => {
+      if (event.key === 'Enter' && event.target.value.trim()) showToast('Pencarian "' + event.target.value.trim() + '" siap dihubungkan ke data mahasiswa atau kelas.');
+    });
+  </script>
+</body>
+</html>

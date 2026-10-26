@@ -1,73 +1,76 @@
 """FR-15: Skor risiko prediktif.
 
-Risiko dihitung sebagai kebalikan dari engagement, ditambah faktor-faktor
-penyebab yang biasanya berkaitan dengan mahasiswa yang berisiko:
-konsistensi rendah dan tugas yang belum dikerjakan.
+Risiko pada dasarnya adalah kebalikan dari engagement, ditambah penalti bagi
+mahasiswa yang akses kuisnya DITOLAK Moodle (event "Quiz access was
+prevented").
 
-Nilai `risk_level` sengaja TIDAK dihitung di sini. Penetapan status EWS
-adalah FR-16 dan memakai threshold milik Kaprodi/Dosen yang disimpan di
-Laravel (tabel `ews_thresholds`). Layanan ini hanya menghasilkan skor;
-membuat keputusannya dengan angka tetap di sini akan mengabaikan
-konfigurasi yang dibuat pengguna.
+PENTING: penalti kuis dihitung RELATIF terhadap median batch, bukan mutlak.
+Pada data IF209, 241 dari 264 mahasiswa punya setidaknya satu akses kuis
+yang ditolak (rata-rata 4,69). Kalau penalti-nya mutlak, hampir semua
+mahasiswa mendapat penalti yang sama besar, sehingga tidak ada yang
+terdiferensiasi: yang benar-benar diblokir sering dan yang hanya satu kali
+sama-sama terc startups. Dengan cara relativ, hanya yang jauh melewati
+median kelas yang dikenai penalti.
+
+Nilai `risk_level` tidak dipakai sebagai keputusan EWS. Penetapan status EWS
+adalah FR-16 dan dihitung Laravel berdasarkan threshold milik Kaprodi/Dosen
+(tabel `ews_thresholds`). Angka di sini hanya untuk tampilan.
 """
 
 from __future__ import annotations
 
-# Bobot komponen risiko, total = 1.0
-RISK_WEIGHTS = {
-    "engagement_rendah": 0.40,
-    "konsistensi_rendah": 0.25,
-    "tugas_menumpuk": 0.20,
-    "interaksi_rendah": 0.15,
-}
+import statistics
 
-# Komponen dengan nilai di atas ambang ini dianggap aman, tidak menambah risiko
-BATAS_AMAN = 0.40
+# Setiap kejadian "Quiz access was prevented" di atas median batch
+# menambah risiko sebesar ini, dibatasi maksimal PENALTI_MAKS.
+PENALTI_PER_KUIS_DITOLAK = 0.02
+PENALTI_MAKS = 0.15
+
+
+def median_kuis_ditolak(daftar: list[int]) -> float:
+    """Median accesses blocked across satu batch, dipakai sebagai patokan."""
+    if not daftar:
+        return 0.0
+    return float(statistics.median(daftar))
 
 
 def hitung_risk(
     engagement_rate: float,
     *,
-    konsistensi: float,
-    tugas: float,
-    interaksi: float,
-    bobot: dict[str, float] | None = None,
-) -> dict[str, float]:
-    """Kembalikan risk_score (0..1) beserta rincian komponennya."""
-    w = {**RISK_WEIGHTS, **(bobot or {})}
-    total_bobot = sum(w.values()) or 1.0
+    kuis_ditolak: int = 0,
+    median_kuis: float = 0.0,
+) -> dict:
+    """Kembalikan risk_score (0..1), level, dan rincian komponennya."""
+    dasar = max(0.0, min(1.0, 1.0 - engagement_rate))
 
-    # Risiko utama: engagement serendah mungkin
-    risiko_engagement = 1.0 - engagement_rate
+    # Hanya yangpenalty-nya di atas median batch yang dihitung
+    kelebihan = max(0.0, float(kuis_ditolak) - median_kuis)
+    penalti = min(PENALTI_MAKS, kelebihan * PENALTI_PER_KUIS_DITOLAK)
 
-    # Konsistensi rendah = hadir tidak teratur
-    risiko_konsistensi = 0.0 if konsistensi >= BATAS_AMAN else (BATAS_AMAN - konsistensi) / BATAS_AMAN
+    skor = max(0.0, min(1.0, dasar + penalti))
 
-    # Tugas menumpuk = tugas belum dikerjakan
-    risiko_tugas = 0.0 if tugas >= BATAS_AMAN else (BATAS_AMAN - tugas) / BATAS_AMAN
+    if skor >= 0.65:
+        level = "high"
+    elif skor >= 0.40:
+        level = "medium"
+    else:
+        level = "low"
 
-    # Interaksi rendah = tidak pernah berdiskusi
-    risiko_interaksi = 0.0 if interaksi >= BATAS_AMAN else (BATAS_AMAN - interaksi) / BATAS_AMAN
-
-    komponen = {
-        "engagement_rendah": risiko_engagement,
-        "konsistensi_rendah": risiko_konsistensi,
-        "tugas_menumpuk": risiko_tugas,
-        "interaksi_rendah": risiko_interaksi,
+    return {
+        "risk_score": round(skor, 4),
+        "risk_level": level,
+        "median_kuis_ditolak": round(median_kuis, 2),
+        "komponen_risk": {
+            "engagement_rendah": round(dasar, 4),
+            "kuis_ditolak_lebih": round(penalti, 4),
+        },
     }
-
-    skor = sum(komponen[key] * w[key] for key in komponen) / total_bobot
-
-    rincian: dict[str, float] = {key: round(value, 4) for key, value in komponen.items()}
-    rincian["risk_score"] = round(max(0.0, min(1.0, skor)), 4)
-
-    return rincian
 
 
 def confidence_dari_silhouette(silhouette: float | None, jumlah_cluster: int) -> float:
     """Ubah kualitas pengelompokan menjadi confidence 0..1.
 
-    Confidence ini menggambarkan keyakinan terhadap PENGELOMPOKAN,
+    Confidence menggambarkan keyakinan terhadap PENGELOMPOKAN,
     bukan keyakinan terhadap prediksi risiko seorang mahasiswa.
     """
     if silhouette is None or jumlah_cluster < 2:

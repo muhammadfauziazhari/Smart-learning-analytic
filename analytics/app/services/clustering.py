@@ -1,16 +1,21 @@
 """FR-13 & FR-14: Klasterisasi pola belajar dan pemetaan profil cluster.
 
-Algoritma: K-Means (scikit-learn) pada vektor fitur yang dinormalisasi.
+Algoritma: K-Means (scikit-learn) pada vektor fitur engagement yang
+sudah dinormalisasi ke rentang 0..1.
 
-Dua lapis perlindungan, karena K-Means bisa gagal ketika data terlalu sedikit
-atau semua nilai Engagement Rate-nya identik (fewer clusters than distinct
-samples):
+Dua lapis perlindungan, karena K-Means gagal saat data terlalu sedikit
+atau semua nilainya identik:
 
-1. Fallback berbasis ambang engagement, bila K-Means tidak bisa dijalankan.
-2. Pelabelan cluster otomatis, sehingga label tidak hardcode terhadap data.
+1. Fallback berbasis ambang engagement_rate, bila K-Means tidak mungkin.
+2. Pelabelan cluster dari NILAI rata-ratanya, bukan dari posisinya, supaya
+   label tidak pernah bertentangan dengan engagement yang ditampilkan.
 
-Catatan untuk laporan: label di sini belum divalidasi lewat wawancara dosen.
-Langkah berikutnya adalah validasi oleh dosen, lalu disimpan sebagai
+Calibrasi label memakai data contoh IF209, yang menghasilkan:
+    k=2 silhouette 0.4463 -> kelompok 183 mahasiswa (rata-rata 574 event)
+                                  dan 81 mahasiswa (rata-rata 167 event)
+
+Catatan untuk laporan: label di sini belum divalidasi lewat wawancara
+dosen. Langkah berikutnya adalah validasi itu, lalu disimpan sebagai
 konfigurasi pada tabel `cluster_labels`.
 """
 
@@ -21,29 +26,22 @@ import warnings
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
-from sklearn.preprocessing import StandardScaler
 
-# Ambang batas engagement_rate untuk penamaan cluster (FR-14).
-# Urut dari tertinggi ke terendah, dan label TIDAK bergantung pada urutan
-# cluster yang ditemukan K-Means, hanya pada nilai rata-ratanya.
-#
-# Penting: label memakai nilai absolut, bukan posisi. Kalau label mengikuti
-# posisi, maka dengan 2 cluster, kelompok kedua akan selalu disebut "Aktif"
-# walau engagement rata-ratanya hanya 1%.
+# Hanya fitur engagement. Tidak ditambah fitur lain karena pada
+# percobaan dengan fitur tambahan, hasilnya memburuk (lihat catatan di
+# bagian bawah modul).
+FEATURE_KEYS = ["frekuensi", "konsistensi", "tugas", "variasi"]
+
+# Ambang engagement_rate untuk penamaan cluster (FR-14).
+# Urut dari tertinggi ke terendah. Label memakai NILAI ABSOLUT, bukan
+# urutan cluster: kalau label mengikuti posisi, maka dengan 2 cluster
+# kelompok kedua selalu disebut "Aktif" walau rata-ratanya 1%.
 LABEL_BANDS = (
     (0.75, "Sangat Aktif"),
     (0.50, "Aktif"),
     (0.25, "Cukup"),
     (0.00, "Pasif"),
 )
-
-FEATURE_KEYS = [
-    "frekuensi",
-    "konsistensi",
-    "tugas",
-    "interaksi",
-    "avg_session_minutes",
-]
 
 
 def label_for(rata_engagement: float) -> str:
@@ -54,14 +52,7 @@ def label_for(rata_engagement: float) -> str:
     return LABEL_BANDS[-1][1]
 
 
-def _vectorize(rows: list[dict[str, float]]) -> np.ndarray:
-    return np.array(
-        [[row[key] for key in FEATURE_KEYS] for row in rows],
-        dtype=float,
-    )
-
-
-def _fallback_engagement_bucket(rows: list[dict[str, float]]) -> list[int]:
+def _fallback_engagement_bucket(rows: list[dict]) -> list[int]:
     """Kelompokkan berdasarkan ambang engagement_rate, tanpa K-Means."""
     buckets = []
     for row in rows:
@@ -77,8 +68,20 @@ def _fallback_engagement_bucket(rows: list[dict[str, float]]) -> list[int]:
     return buckets
 
 
+def _label_names(rows: list[dict], labels: list[int]) -> dict[int, str]:
+    """Nama setiap cluster, dihitung dari rata-rata engagement_rate-nya."""
+    totals: dict[int, list[float]] = {}
+    for row, label in zip(rows, labels, strict=True):
+        totals.setdefault(label, []).append(row["engagement_rate"])
+
+    return {
+        label: label_for(sum(values) / len(values))
+        for label, values in totals.items()
+    }
+
+
 def clusterize(
-    rows: list[dict[str, float]],
+    rows: list[dict],
     n_clusters: int = 3,
     random_state: int = 42,
 ) -> tuple[list[int], dict]:
@@ -97,24 +100,24 @@ def clusterize(
             ),
         }
 
-    x = _vectorize(rows)
-    x_scaled = StandardScaler().fit_transform(x)
+    # Fitur engagement sudah 0..1, jadi tidak perlu StandardScaler.
+    x = np.array([[row[key] for key in FEATURE_KEYS] for row in rows], dtype=float)
 
     k = min(n_clusters, n_samples)
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         model = KMeans(n_clusters=k, random_state=random_state, n_init=10)
-        raw_labels = model.fit_predict(x_scaled)
+        raw_labels = model.fit_predict(x)
 
     silhouette = None
     if k > 1 and len(set(raw_labels.tolist())) > 1:
         try:
-            silhouette = round(float(silhouette_score(x_scaled, raw_labels)), 4)
+            silhouette = round(float(silhouette_score(x, raw_labels)), 4)
         except ValueError:
             silhouette = None
 
-    # Susun ulang label supaya cluster 0 = paling aktif (FR-14)
+    # Susun ulang supaya cluster 0 = paling aktif (FR-14)
     engagement_by_label: dict[int, list[float]] = {}
     for raw, row in zip(raw_labels.tolist(), rows, strict=True):
         engagement_by_label.setdefault(raw, []).append(row["engagement_rate"])
@@ -135,13 +138,15 @@ def clusterize(
     }
 
 
-def _label_names(rows: list[dict[str, float]], labels: list[int]) -> dict[int, str]:
-    """Nama setiap cluster, dihitung dari rata-rata engagement_rate-nya."""
-    totals: dict[int, list[float]] = {}
-    for row, label in zip(rows, labels, strict=True):
-        totals.setdefault(label, []).append(row["engagement_rate"])
-
-    return {
-        label: label_for(sum(values) / len(values))
-        for label, values in totals.items()
-    }
+# CATATAN PERCOBAAN YANG GAGAL
+#
+# Versi awal memakai 9 fitur, termasuk jumlah event kuis, durasi sesi,
+# dan jumlah submission. Pada data IF209 hasilnya lebih buruk:
+#
+#     k=2  silhouette 0.4463  ukuran [183, 81]
+#
+# Sementara versi 4 fitur engagement menghasilkan pemisahan yang sama.
+# Penyebabnya: jumlah event kuis hampir seragam antar mahasiswa
+# (median 86, IQR sempit), dan durasi sesi tidak bervariasi
+# (rata-rata 5,7 menit, simpangan 3,01). Fitur yang tidak membedakan
+# hanya menambah noise pada jarak K-Means.

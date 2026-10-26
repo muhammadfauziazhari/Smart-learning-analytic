@@ -409,7 +409,7 @@ class AkunTest extends TestCase
         $this->assertStringContainsString('Kelola Akun', $html);
         $this->assertStringContainsString('Penugasan Akademik', $html);
         $this->assertStringContainsString('Upload Log Aktivitas', $html);
-        $this->assertStringContainsString('Ringkasan Dashboard', $html);
+        $this->assertStringContainsString('Mata Kuliah Terdaftar', $html);
     }
 
     public function test_pesan_berhasil_hanya_muncul_di_tab_yang_aktif(): void

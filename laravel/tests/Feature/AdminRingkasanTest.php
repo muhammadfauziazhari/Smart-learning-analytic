@@ -70,16 +70,13 @@ class AdminRingkasanTest extends TestCase
         $this->assertStringContainsString('IF209', $html);
         $this->assertStringContainsString('Jaringan Komputer', $html);
 
-        // Dua mahasiswa unik, satu kelas, tiga baris log.
-        $this->assertStringContainsString('2 mhs', $html);
-        $this->assertStringContainsString('1 kelas', $html);
-
-        preg_match('/Baris log<\/p>\s*<p[^>]*>(?<angka>[^<]+)<\/p>/', $html, $cocok);
-        $this->assertSame(
-            '3',
-            str_replace(['.', ','], '', $cocok['angka'] ?? ''),
-            'Baris log harus 3, hanya yang punya kode mata kuliah.',
-        );
+        // Dua mahasiswa unik, satu kelas, tiga baris log. Angka per mata
+        // kuliah dibaca dari atribut baris supaya test tidak terikat pada
+        // bentuk visual tabel yang bisa berubah.
+        $this->assertStringContainsString('data-kode="IF209"', $html);
+        $this->assertStringContainsString('data-kelas="1"', $html);
+        $this->assertStringContainsString('data-mahasiswa="2"', $html);
+        $this->assertStringContainsString('data-log="3"', $html);
     }
 
     public function test_query_agregasi_tidak_menyandera_nama_alias(): void

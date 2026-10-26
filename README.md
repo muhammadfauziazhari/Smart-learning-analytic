@@ -71,7 +71,8 @@ Keluarannya `Layanan hidup.` kalau keduanya sudah terhubung.
 | `GET /health` | Cek kesiapan layanan, dipakai `analytics:ping` |
 | `POST /analyze` | Hitung analitik satu batch import (maks. 20.000 mahasiswa) |
 
-Laravel mengirim agregat satu baris per mahasiswa-per-kelas-periode:
+Laravel mengirim agregat satu baris per mahasiswa-per-kelas-periode.
+Mahasiswa identified by NIM, bukan id akun, karena mereka tidak punya akun:
 
 ```json
 {
@@ -79,28 +80,29 @@ Laravel mengirim agregat satu baris per mahasiswa-per-kelas-periode:
   "period": "2026-09",
   "students": [
     {
-      "mahasiswa_id": 1,
+      "nim": "3312501013",
       "kelas_id": 5,
       "metrics": {
-        "total_log": 300,
-        "days_active": 30,
-        "days_in_period": 30,
-        "upload_count": 20,
-        "assignment_done": 20,
-        "quiz_done": 20,
-        "discussion_count": 30,
-        "avg_session_minutes": 60.0
+        "total_event": 446,
+        "hari_aktif": 29,
+        "tugas_dikumpulkan": 12,
+        "jenis_event": 21,
+        "kuis_ditolak": 4
       }
     }
   ]
 }
 ```
 
+Layanan menolak field yang tidak dikenal (`extra="forbid"`). Kalau nama
+field salah ketik, permintaan ditolak 422 — bukan diterima diam-diam dengan
+seluruh nilai nol.
+
 ## Pengujian
 
 ```sh
-cd laravel   && php artisan test      # 31 test
-cd analytics && .venv\Scripts\python.exe -m pytest tests -q   # 31 test
+cd laravel   && php artisan test                              # 98 test
+cd analytics && .venv\Scripts\python.exe -m pytest tests -q   # 45 test
 ```
 
 ## Peran pengguna
@@ -109,7 +111,11 @@ cd analytics && .venv\Scripts\python.exe -m pytest tests -q   # 31 test
 |---|---|
 | Admin | Kelola akun dan data master, impor log LMS, atur threshold EWS |
 | Dosen | Analitik kelas yang ia ampu, quick action ke mahasiswa |
-| Kepala Prodi | Analitik makro prodi yang diampu, performa dosen |
+| Kaprodi | Analitik makro prodi yang diampu, performa dosen |
+
+Mahasiswa **tidak punya akun**. Mereka tidak pernah masuk ke sistem ini,
+jadi yang disimpan hanya NIM dan nama pada tabel `kelas_mahasiswa`.
+Tidak ada password atau email yang dibuat-buat untuk mereka.
 
 ## Catatan untuk deploy
 

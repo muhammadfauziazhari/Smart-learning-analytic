@@ -408,6 +408,28 @@ class LogImportTest extends TestCase
             ->assertViewIs('Admin.LogImportHistory');
     }
 
+    public function test_riwayat_menampilkan_batch_yang_sudah_selesai(): void
+    {
+        $admin = $this->admin();
+
+        ImportBatch::create([
+            'admin_id' => $admin->id,
+            'nama_file' => 'log-lms.csv',
+            'jumlah_baris' => 3,
+            'jumlah_berhasil' => 3,
+            'status' => ImportBatch::STATUS_BERHASIL,
+            'started_at' => now()->subMinute(),
+            'finished_at' => now(),
+        ]);
+
+        // finished_at harus dibaca sebagai datetime; kalau masih string,
+        // view gagal saat memanggil translatedFormat().
+        $this->actingAs($admin)
+            ->get('/admin/log-import')
+            ->assertOk()
+            ->assertSee('log-lms.csv');
+    }
+
     public function test_dosen_tidak_bisa_import(): void
     {
         $dosen = User::create([
