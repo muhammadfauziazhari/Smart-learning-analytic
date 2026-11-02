@@ -8,17 +8,18 @@ Folder ini menampung dokumen rancangan proyek.
 |---|---|---|
 | Kebutuhan Fungsional | 27 FR dalam 7 modul, beserta kriteria terima | Disusun di percakapan, belum ditulis ke file |
 | Use Case Diagram | Aktor, use case, relasi `include`/`extend`/`communicate` (PlantUML) | Disusun di percakapan, belum ditulis ke file |
-| Desain Basis Data | Rancangan tabel data master, log LMS, hasil analisis, EWS | Disusun di percakapan, belum ditulis ke file |
+| Desain Basis Data | ERD, kamus data, relasi logis, dan panduan membaca database | Tersedia di `docs/desain-basis-data.md` |
 
-Dokumen-dokumen tersebut sengaja belum dijadikan file karena masih menunggu
-keputusan berikut:
+Dokumen desain basis data sudah ditulis karena bentuk tabelnya dapat dibaca
+langsung dari migration dan database. Dokumen lainnya masih menunggu keputusan
+berikut:
 
 1. Contoh header CSV log LMS Polymedi Batam
 2. Penamaan konsisten "Kepala Prodi" atau "Kaprodi"
 3. Periode analisis: harian, mingguan, atau bulanan
 4. Kontrak APIFinal untuk layanan analytics
 
-## Rencana file
+## Struktur file
 
 ```
 docs/

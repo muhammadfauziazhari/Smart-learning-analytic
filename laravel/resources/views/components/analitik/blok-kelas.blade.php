@@ -43,7 +43,7 @@
             </p>
             <p class="text-[11px] text-slate-500 mt-0.5">
                 @if ($tagna !== null)
-                    <span class="text-blue-600">{{ $tagna }}</span> ·
+                    <span class="text-royal">{{ $tagna }}</span> ·
                 @endif
                 {{ $k['periode'] ?? 'Belum ada data log' }} ·
                 {{ number_format($k['terdaftar'] ?? 0, 0, ',', '.') }} mahasiswa terdaftar ·
@@ -56,7 +56,7 @@
         </div>
         <div class="flex flex-wrap gap-2">
             @forelse ($k['klaster'] ?? [] as $c)
-                <span class="text-[11px] rounded-full border border-blue-200 bg-blue-50 text-blue-700 px-2.5 py-1">
+                <span class="text-[11px] rounded-full border border-royal/20 bg-cream text-royal px-2.5 py-1">
                     {{ $c['label'] }}: {{ $c['jumlah'] }}
                 </span>
             @empty

@@ -366,6 +366,33 @@ class AkunTest extends TestCase
         $this->assertStringContainsString('window.tabAwal = "akun"', $html);
     }
 
+    public function test_pagination_akun_dari_dashboard_membuka_halaman_akun(): void
+    {
+        for ($i = 1; $i <= 15; $i++) {
+            User::create([
+                'nama' => sprintf('Dosen %02d', $i),
+                'email' => sprintf('dosen%02d@uji.local', $i),
+                'password' => 'rahasia123',
+                'role' => 'dosen',
+                'nomor_induk' => sprintf('NIM%02d', $i),
+            ]);
+        }
+
+        $html = $this->actingAs($this->admin)
+            ->get('/admin/dashboard')
+            ->assertOk()
+            ->getContent();
+
+        $this->assertStringContainsString(route('admin.akun').'?page=2', $html);
+
+        $halamanKedua = $this->get('/admin/akun?page=2')
+            ->assertOk()
+            ->getContent();
+
+        $this->assertStringContainsString('window.tabAwal = "akun"', $halamanKedua);
+        $this->assertStringContainsString('Dosen 15', $halamanKedua);
+    }
+
     public function test_semua_tab_admin_bisa_dipindah_tanpa_memuat_ulang(): void
     {
         $html = $this->actingAs($this->admin)

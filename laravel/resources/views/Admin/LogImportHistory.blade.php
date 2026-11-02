@@ -9,13 +9,13 @@
 
     <div class="flex items-center justify-between">
         <div>
-            <h2 class="text-xl font-bold text-white">Riwayat Import Log LMS</h2>
-            <p class="text-xs text-slate-400 mt-0.5">
+            <h2 class="text-xl font-bold text-navy">Riwayat Import Log LMS</h2>
+            <p class="text-xs text-slate-500 mt-0.5">
                 Setiap file CSV yang diupload tercatat di sini beserta jumlah baris tersimpan, duplikat, dan gagal.
             </p>
         </div>
         <a href="{{ route('admin.dashboard') }}"
-            class="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-2">
+            class="text-xs font-medium text-royal hover:text-navy transition-colors flex items-center gap-2">
             <i class="fa-solid fa-arrow-left"></i>
             Kembali ke Upload Log
         </a>
@@ -25,15 +25,15 @@
     @include('partials.alert')
 
     @if ($batches->isEmpty())
-        <div class="border-2 border-dashed border-slate-800 rounded-2xl p-12 text-center text-slate-600">
+        <div class="border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center text-slate-500 bg-white">
             <i class="fa-solid fa-inbox text-3xl mb-2"></i>
             <p class="text-sm">Belum ada file yang diimport.</p>
         </div>
     @else
-        <div class="rounded-2xl border border-slate-800 overflow-hidden">
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-xs">
-                    <thead class="bg-slate-900 text-slate-400 uppercase tracking-wider">
+                    <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider">
                         <tr>
                             <th class="text-left font-medium px-5 py-3">File</th>
                             <th class="text-left font-medium px-5 py-3">Mata Kuliah</th>
@@ -46,7 +46,7 @@
                             <th class="text-left font-medium px-5 py-3">Status</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-800 text-slate-300">
+                    <tbody class="divide-y divide-slate-100 text-slate-700">
                         @foreach ($batches as $batch)
                             <tr>
                                 <td class="px-5 py-3">
@@ -57,7 +57,7 @@
                                         </span>
                                         @if ($batch->path)
                                             <a href="{{ route('admin.logs.download', $batch) }}"
-                                                class="text-slate-500 hover:text-slate-300" title="Unduh file asli">
+                                                class="text-slate-400 hover:text-royal" title="Unduh file asli">
                                                 <i class="fa-solid fa-download"></i>
                                             </a>
                                         @endif
@@ -65,40 +65,40 @@
                                 </td>
                                 <td class="px-5 py-3">
                                     @if ($batch->kode_mata_kuliah)
-                                        <span class="font-mono text-indigo-300">{{ $batch->kode_mata_kuliah }}</span>
+                                        <span class="font-mono font-medium text-royal">{{ $batch->kode_mata_kuliah }}</span>
                                         <span class="text-slate-500">{{ $batch->nama_mata_kuliah }}</span>
                                     @else
                                         <span class="text-slate-600">-</span>
                                     @endif
                                 </td>
                                 <td class="px-5 py-3">{{ number_format($batch->jumlah_baris, 0, ',', '.') }}</td>
-                                <td class="px-5 py-3 text-emerald-400">
+                                <td class="px-5 py-3 text-emerald-600">
                                     {{ number_format($batch->jumlah_berhasil, 0, ',', '.') }}
-                                    <span class="text-slate-600">({{ $batch->persenBerhasil() }}%)</span>
+                                    <span class="text-slate-400">({{ $batch->persenBerhasil() }}%)</span>
                                 </td>
-                                <td class="px-5 py-3 text-amber-400/80">{{ number_format($batch->jumlah_duplikat, 0, ',', '.') }}</td>
-                                <td class="px-5 py-3 {{ $batch->jumlah_gagal > 0 ? 'text-red-400' : 'text-slate-600' }}">
+                                <td class="px-5 py-3 text-amber-600">{{ number_format($batch->jumlah_duplikat, 0, ',', '.') }}</td>
+                                <td class="px-5 py-3 {{ $batch->jumlah_gagal > 0 ? 'text-rose-600' : 'text-slate-400' }}">
                                     {{ number_format($batch->jumlah_gagal, 0, ',', '.') }}
                                 </td>
                                 <td class="px-5 py-3">
-                                    <span class="text-emerald-400">{{ $batch->jumlah_terkenal }}</span>
-                                    <span class="text-slate-600">/ {{ $batch->jumlah_berhasil }}</span>
+                                    <span class="text-emerald-600">{{ $batch->jumlah_terkenal }}</span>
+                                    <span class="text-slate-400">/ {{ $batch->jumlah_berhasil }}</span>
                                 </td>
-                                <td class="px-5 py-3 text-slate-400">
+                                <td class="px-5 py-3 text-slate-500">
                                     {{ $batch->finished_at?->translatedFormat('d M Y H:i') ?? $batch->created_at->translatedFormat('d M Y H:i') }}
                                 </td>
                                 <td class="px-5 py-3">
                                     <span @class([
                                         'px-2 py-1 rounded-md text-[10px] uppercase tracking-wider',
-                                        'bg-emerald-500/10 text-emerald-400' => $batch->status === 'berhasil',
-                                        'bg-red-500/10 text-red-400' => $batch->status === 'gagal',
-                                        'bg-amber-500/10 text-amber-400' => in_array($batch->status, ['menunggu', 'diproses'], true),
+                                        'bg-emerald-50 text-emerald-700' => $batch->status === 'berhasil',
+                                        'bg-rose-50 text-rose-700' => $batch->status === 'gagal',
+                                        'bg-amber-50 text-amber-700' => in_array($batch->status, ['menunggu', 'diproses'], true),
                                     ])>{{ $batch->status }}</span>
                                 </td>
                             </tr>
 
                             @if ($batch->pesan)
-                                <tr class="bg-slate-900/40">
+                                <tr class="bg-slate-50">
                                     <td colspan="9" class="px-5 py-2 text-[11px] text-slate-500">
                                         {{ $batch->pesan }}
                                     </td>
@@ -116,8 +116,8 @@
     @endif
 
     {{-- Penjelasan angka pada tabel --}}
-    <div class="rounded-2xl border border-slate-800 bg-slate-900/40 p-5">
-        <p class="text-xs font-semibold text-slate-300 mb-2">Cara membaca angka di atas</p>
+    <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-5">
+        <p class="text-xs font-semibold text-navy mb-2">Cara membaca angka di atas</p>
         <ul class="text-[11px] text-slate-500 space-y-1 list-disc pl-4">
             <li><strong>Tersimpan</strong> - baris yang berhasil masuk ke tabel <code>log_aktivitas</code>.</li>
             <li><strong>Duplikat</strong> - baris yang isinya identik persis dengan baris sebelumnya di file yang sama.</li>

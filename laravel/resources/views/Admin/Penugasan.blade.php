@@ -4,15 +4,15 @@
 
 @php
     $labelDasar = 'block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5';
-    $inputDasar = 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 focus:outline-none transition-all';
+    $inputDasar = 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-royal focus:ring-2 focus:ring-royal/15 focus:outline-none transition-all';
 @endphp
 
-<div class="space-y-6 rounded-3xl bg-slate-100 p-5 lg:p-7">
+<div class="space-y-6 rounded-3xl bg-ivory p-5 lg:p-7">
 
     <div class="flex items-start justify-between gap-4">
         <div>
             <h2 class="text-2xl font-extrabold text-[#0B1B3D]">Penugasan Akademik</h2>
-            <p class="text-sm text-blue-600 mt-1">
+            <p class="text-sm text-royal mt-1">
                 Tetapkan dosen pengampu dan catat mahasiswa ke setiap kelas.
             </p>
             <p class="text-[11px] text-slate-500 mt-1">
@@ -28,9 +28,9 @@
     @endif
 
     {{-- Penjelasan importance --}}
-    <div class="rounded-2xl border border-blue-200 bg-blue-50 p-5">
+    <div class="rounded-2xl border border-amber/30 bg-cream p-5">
         <div class="flex items-start gap-3">
-            <div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0">
+            <div class="w-9 h-9 rounded-full bg-royal text-white flex items-center justify-center shrink-0">
                 <i class="fa-solid fa-circle-info text-sm"></i>
             </div>
             <div class="text-xs text-slate-600 space-y-1.5 leading-relaxed">
@@ -64,7 +64,7 @@
                 @endforeach
             </select>
         </div>
-        <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-[#0F3277] hover:bg-[#0B255B] text-white transition-all">
+        <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-[#0F3C8A] hover:bg-[#0B1B3D] text-white transition-all">
             <i class="fa-solid fa-filter mr-1.5"></i>Terapkan
         </button>
         @if (request()->hasAny(['q', 'mata_kuliah']))
@@ -97,7 +97,7 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-2 text-[11px] shrink-0">
-                            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-100 px-2.5 py-1 font-semibold text-blue-700">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-cream border border-amber/30 px-2.5 py-1 font-semibold text-royal">
                                 <i class="fa-solid fa-chalkboard-user"></i>{{ $k->dosen->count() }} dosen
                             </span>
                             <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 px-2.5 py-1 font-semibold text-slate-600">
@@ -115,13 +115,13 @@
                         {{-- DOSEN PENGAMPU --}}
                         <div>
                             <p class="text-xs font-bold text-[#0B1B3D] mb-3">
-                                <i class="fa-solid fa-chalkboard-user text-blue-500 mr-1.5"></i>Dosen Pengampu
+                                <i class="fa-solid fa-chalkboard-user text-royal mr-1.5"></i>Dosen Pengampu
                             </p>
 
                             @forelse ($k->dosen as $dosen)
                                 <div class="flex items-center justify-between bg-white border border-slate-200 rounded-xl px-4 py-2.5 mb-2 shadow-sm">
                                     <div class="flex items-center gap-3 min-w-0">
-                                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-blue-700 flex items-center justify-center text-[11px] font-bold text-white shrink-0">
+                                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-sapphire to-royal flex items-center justify-center text-[11px] font-bold text-white shrink-0">
                                             {{ str($dosen->nama)->substr(0, 2)->upper() }}
                                         </div>
                                         <div class="min-w-0">
@@ -156,7 +156,7 @@
                                     <option value="pengampu">Pengampu</option>
                                     <option value="pembantu">Pembantu</option>
                                 </select>
-                                <button class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-[#0F3277] hover:bg-[#0B255B] text-white transition-all">
+                                <button class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-[#0F3C8A] hover:bg-[#0B1B3D] text-white transition-all">
                                     <i class="fa-solid fa-plus mr-1"></i>Tambah
                                 </button>
                             </form>
@@ -165,7 +165,7 @@
                         {{-- MAHASISWA --}}
                         <div class="pt-5 border-t border-slate-200">
                             <p class="text-xs font-bold text-[#0B1B3D] mb-3">
-                                <i class="fa-solid fa-users text-blue-500 mr-1.5"></i>Mahasiswa
+                                <i class="fa-solid fa-users text-royal mr-1.5"></i>Mahasiswa
                                 <span class="text-slate-400 font-normal">- tempel daftar NIM, satu per baris</span>
                             </p>
 
@@ -220,11 +220,11 @@
                                 @csrf
                                 <textarea name="nim" rows="5" required
                                     placeholder="3312501013&#10;3312501014 - Budi Santoso&#10;3312501015  Siti Aminah"
-                                    class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs font-mono text-slate-800 placeholder-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 focus:outline-none transition-all"></textarea>
+                                    class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs font-mono text-slate-800 placeholder-slate-400 focus:border-royal focus:ring-2 focus:ring-royal/15 focus:outline-none transition-all"></textarea>
                                 <p class="text-[11px] text-slate-500 mt-2 mb-3">
                                     Boleh juga dipisah koma atau titik koma. Tulis <span class="font-mono text-slate-700">NIM - Nama</span> bila nama sudah diketahui.
                                 </p>
-                                <button class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition-all">
+                                <button class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-royal hover:bg-navy text-white shadow-md shadow-royal/20 transition-all">
                                     <i class="fa-solid fa-user-plus mr-1.5"></i>Daftarkan Mahasiswa
                                 </button>
                             </form>

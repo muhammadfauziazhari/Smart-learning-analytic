@@ -1,15 +1,15 @@
-{{-- Halaman Upload Log Aktivitas CSV (FR-02, FR-06) --}}
+{{-- Halaman Upload Log Aktivitas CSV/XLSX (FR-02, FR-06) --}}
 
-<div class="space-y-6 rounded-3xl bg-slate-100 p-5 lg:p-7">
+<div class="space-y-6 rounded-3xl bg-ivory p-5 lg:p-7">
 
     <!-- Judul -->
     <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
             <h2 class="text-2xl font-extrabold text-[#0B1B3D]">Upload Log Aktivitas</h2>
-            <p class="text-sm text-blue-600 mt-1">Unggah file CSV berisi log aktivitas mahasiswa dan dosen.</p>
+            <p class="text-sm text-royal mt-1">Unggah file CSV atau XLSX berisi log aktivitas mahasiswa dan dosen.</p>
         </div>
         <a href="{{ route('admin.logs.index') }}"
-            class="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 hover:border-blue-300 hover:bg-blue-50 px-4 py-2 text-xs font-semibold text-slate-600 hover:text-blue-700 shadow-sm transition-all">
+            class="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 hover:border-amber/50 hover:bg-cream px-4 py-2 text-xs font-semibold text-slate-600 hover:text-royal shadow-sm transition-all">
             <i class="fa-solid fa-clock-rotate-left text-amber-500"></i>
             Riwayat Import
         </a>
@@ -25,21 +25,21 @@
 
         <!-- AREA UPLOAD -->
         <div id="dropZone"
-            class="border-2 border-dashed border-slate-300 rounded-2xl bg-white p-10 text-center shadow-sm transition-colors duration-200 hover:border-blue-400 hover:bg-blue-50/40 cursor-pointer">
-            <input type="file" name="file_csv" id="fileInput" accept=".csv,text/csv" class="hidden">
+            class="border-2 border-dashed border-slate-300 rounded-2xl bg-white p-10 text-center shadow-sm transition-colors duration-200 hover:border-royal hover:bg-cream/40 cursor-pointer">
+            <input type="file" name="file_csv" id="fileInput" class="hidden">
 
             <div id="dropZoneEmpty">
                 <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-amber-400 to-amber-300 flex items-center justify-center mb-3 shadow-lg shadow-amber-500/20">
                     <i class="fa-solid fa-cloud-arrow-up text-2xl text-[#0B1B3D]"></i>
                 </div>
-                <p class="text-sm font-bold text-[#0B1B3D]">Klik atau seret file CSV ke sini</p>
-                <p class="text-xs text-slate-500 mt-1">Format .csv. Header baris pertama otomatis dijadikan nama kolom.</p>
+                <p class="text-sm font-bold text-[#0B1B3D]">Klik atau seret file ke sini</p>
+                <p class="text-xs text-slate-500 mt-1">Format yang didukung: .csv dan .xlsx. Header baris pertama menjadi nama kolom.</p>
             </div>
 
             <div id="dropZoneFilled" class="hidden">
                 <div class="flex items-center justify-center space-x-3">
                     <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
-                        <i class="fa-solid fa-file-csv text-2xl text-emerald-600"></i>
+                        <i class="fa-solid fa-file-excel text-2xl text-emerald-600"></i>
                     </div>
                     <div class="text-left">
                         <p id="fileName" class="text-sm font-bold text-[#0B1B3D]"></p>
@@ -56,11 +56,11 @@
                 <p class="text-[11px] uppercase tracking-wider text-slate-300">Total Baris</p>
                 <p id="statRows" class="text-2xl font-extrabold mt-1">0</p>
             </div>
-            <div class="bg-blue-600 text-white rounded-2xl p-4 shadow-md">
-                <p class="text-[11px] uppercase tracking-wider text-blue-100">Jumlah Kolom</p>
+            <div class="bg-royal text-white rounded-2xl p-4 shadow-md">
+                <p class="text-[11px] uppercase tracking-wider text-white/80">Jumlah Kolom</p>
                 <p id="statCols" class="text-2xl font-extrabold mt-1">0</p>
             </div>
-            <div class="bg-gradient-to-br from-amber-300 to-amber-400 text-[#0B1B3D] rounded-2xl p-4 shadow-md">
+            <div class="bg-gradient-to-br from-amber to-[#D8942A] text-navy rounded-2xl p-4 shadow-md">
                 <p class="text-[11px] uppercase tracking-wider font-semibold">Pemisah Kolom</p>
                 <p id="statDelim" class="text-2xl font-extrabold mt-1">-</p>
             </div>
@@ -102,7 +102,7 @@
                 Batalkan
             </button>
             <button type="submit" id="btnSubmit"
-                class="px-6 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#0F3277] hover:bg-[#0B255B] transition-all shadow-md hover:shadow-lg shadow-blue-950/20 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none">
+                class="px-6 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#0F3C8A] hover:bg-[#0B1B3D] transition-all shadow-md hover:shadow-lg shadow-blue-950/20 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none">
                 <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i>
                 Simpan ke Database
             </button>
@@ -363,6 +363,31 @@
                 fileName.textContent = file.name;
                 fileMeta.textContent = formatBytes(file.size) + ' - klik untuk mengganti file';
 
+                const extension = file.name.split('.').pop().toLowerCase();
+                if (!['csv', 'xlsx'].includes(extension)) {
+                    summaryPanel.classList.remove('hidden');
+                    previewPanel.classList.add('hidden');
+                    actionPanel.classList.remove('hidden');
+                    statStatus.textContent = 'Format tidak sesuai';
+                    statStatus.className = 'text-2xl font-extrabold mt-1 text-rose-600';
+                    showValidation(['Format file tidak sesuai. Unggah file CSV atau XLSX.']);
+                    btnSubmit.disabled = false;
+                    frontendNotice.classList.add('hidden');
+                    return;
+                }
+
+                if (extension === 'xlsx') {
+                    summaryPanel.classList.remove('hidden');
+                    previewPanel.classList.add('hidden');
+                    actionPanel.classList.remove('hidden');
+                    statStatus.textContent = 'Diperiksa saat impor';
+                    statStatus.className = 'text-2xl font-extrabold mt-1 text-[#0B1B3D]';
+                    showValidation([]);
+                    btnSubmit.disabled = false;
+                    frontendNotice.classList.add('hidden');
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = function (event) {
                     const text = String(event.target.result || '');
@@ -409,14 +434,14 @@
             ['dragenter', 'dragover'].forEach(function (evt) {
                 dropZone.addEventListener(evt, function (event) {
                     event.preventDefault();
-                    dropZone.classList.add('border-blue-600', 'bg-blue-50');
+                    dropZone.classList.add('border-royal', 'bg-cream');
                 });
             });
 
             ['dragleave', 'drop'].forEach(function (evt) {
                 dropZone.addEventListener(evt, function (event) {
                     event.preventDefault();
-                    dropZone.classList.remove('border-blue-600', 'bg-blue-50');
+                    dropZone.classList.remove('border-royal', 'bg-cream');
                 });
             });
 

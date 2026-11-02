@@ -4,33 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'EduTrack')</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Token desain bersama: Tailwind CDN, Plus Jakarta Sans, palet EduTrack -->
+    @include('partials.design-tokens')
     <!-- Font Awesome untuk Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Plus Jakarta Sans -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    },
-                    // Palet resmi EduTrack (dipakai halaman login dan
-                    // menjadi acuan halaman frontend berikutnya).
-                    colors: {
-                        navy: '#0F1939',
-                        royal: '#26428B',
-                        sapphire: '#516AC8',
-                        gold: '#E3AF64',
-                        cream: '#FAEBD7',
-                        ivory: '#F8F7F5'
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 <body class="h-full bg-ivory font-sans text-navy antialiased flex overflow-hidden">
 

@@ -248,6 +248,129 @@ class DosenDashboardTest extends TestCase
         $respons->assertSee('belum bisa disusun');
     }
 
+    public function test_hasil_analytics_tampil_di_tab_keaktifan(): void
+    {
+        $dosen = $this->dosen();
+        $kelas = $this->buatKelas('IF209', 'Jaringan Komputer', [
+            '3312501013' => 'Ririn Anisa Sihite',
+        ]);
+        $kelas->dosen()->attach($dosen->id, ['peran' => 'pengampu']);
+
+        Http::fake(['*/analyze' => Http::response([
+            'batch_id' => 1,
+            'period' => '2026-02..2026-07',
+            'results' => [[
+                'nim' => '3312501013',
+                'kelas_id' => $kelas->id,
+                'engagement_rate' => 0.35,
+                'cluster' => 1,
+                'cluster_label' => 'Pasif',
+                'risk_score' => 0.88,
+                'risk_level' => 'high',
+            ]],
+            'clusters' => [],
+            'meta' => [
+                'api_version' => '3.1',
+                'algorithm' => 'kmeans',
+                'jumlah_mahasiswa' => 1,
+                'silhouette_score' => null,
+                'fallback_used' => false,
+                'warning' => null,
+                'kalibrasi' => [],
+            ],
+        ], 200)]);
+
+        $respons = $this->actingAs($dosen)->get('/dosen/dashboard?tab=keaktifan');
+
+        $respons->assertOk()
+            ->assertSee('Detail Keaktifan Mahasiswa')
+            ->assertSee('Pasif')
+            ->assertSee('88,0%')
+            ->assertSee('35%');
+
+        Http::assertSentCount(1);
+    }
+
+    public function test_hasil_analytics_tersimpan_dan_tetap_tampil_saat_layanan_mati(): void
+    {
+        $dosen = $this->dosen();
+        $kelas = $this->buatKelas('IF209', 'Jaringan Komputer', [
+            '3312501013' => 'Ririn Anisa Sihite',
+        ]);
+        $kelas->dosen()->attach($dosen->id, ['peran' => 'pengampu']);
+
+        $panggilanAnalytics = 0;
+        Http::fake(function () use (&$panggilanAnalytics, $kelas) {
+            $panggilanAnalytics++;
+
+            if ($panggilanAnalytics === 1) {
+                return Http::response([
+                    'results' => [[
+                        'nim' => '3312501013',
+                        'kelas_id' => $kelas->id,
+                        'engagement_rate' => 0.35,
+                        'cluster' => 1,
+                        'cluster_label' => 'Pasif',
+                        'risk_score' => 0.88,
+                        'risk_level' => 'high',
+                    ]],
+                ], 200);
+            }
+
+            if ($panggilanAnalytics === 2) {
+                return Http::response(['results' => []], 200);
+            }
+
+            throw new ConnectionException('layanan mati');
+        });
+
+        $this->actingAs($dosen)
+            ->get('/dosen/dashboard?tab=keaktifan')
+            ->assertOk()
+            ->assertSee('Pasif')
+            ->assertSee('At-Risk')
+            ->assertSee('88,0%')
+            ->assertSee('35%');
+
+        $this->get('/dosen/dashboard?tab=keaktifan')
+            ->assertOk()
+            ->assertSee('Pasif')
+            ->assertSee('At-Risk')
+            ->assertSee('88,0%')
+            ->assertSee('35%')
+            ->assertSee('Menampilkan hasil analitik tersimpan sebelumnya.');
+
+        $this->log('IF209', '3312501013', 'Ririn Anisa Sihite', ['periode' => '2026-06']);
+
+        $this->get('/dosen/dashboard?tab=keaktifan')
+            ->assertOk()
+            ->assertSee('Pasif')
+            ->assertSee('At-Risk')
+            ->assertSee('88,0%')
+            ->assertSee('35%')
+            ->assertSee('Menampilkan hasil analitik tersimpan sebelumnya.');
+    }
+
+    public function test_tab_keaktifan_menjelaskan_analitik_yang_tidak_tersedia(): void
+    {
+        $dosen = $this->dosen();
+        $this->matikanAnalytics();
+
+        $kelas = $this->buatKelas('IF209', 'Jaringan Komputer', [
+            '3312501013' => 'Ririn Anisa Sihite',
+        ]);
+        $kelas->dosen()->attach($dosen->id, ['peran' => 'pengampu']);
+
+        $this->actingAs($dosen)
+            ->get('/dosen/dashboard?tab=keaktifan')
+            ->assertOk()
+            ->assertSee('Layanan analytics tidak bisa dihubungi')
+            ->assertSee('FR-12a')
+            ->assertSee('Klaster')
+            ->assertSee('Risiko')
+            ->assertSee('Engagement');
+    }
+
     public function test_daftar_perlu_perhatian_menyaring_risiko_rendah_dan_terurut(): void
     {
         $dosen = $this->dosen();

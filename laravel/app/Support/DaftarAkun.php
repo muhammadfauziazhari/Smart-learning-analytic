@@ -23,7 +23,9 @@ class DaftarAkun
     public static function data(Request $request): array
     {
         return [
-            'akun' => self::query($request)->paginate(15)->withQueryString(),
+            'akun' => self::query($request)->paginate(15)
+                ->withQueryString()
+                ->setPath(route('admin.akun')),
             'q' => $request->string('q')->trim()->value(),
             'role' => $request->string('role')->value(),
             'totalDosen' => User::where('role', 'dosen')->count(),

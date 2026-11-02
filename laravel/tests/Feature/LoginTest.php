@@ -66,8 +66,19 @@ class LoginTest extends TestCase
                 'email' => $user->email,
                 'password' => 'password-salah',
             ])
-            ->assertSee('Email atau password yang Anda masukkan salah.')
+            ->assertSee('Password yang Anda masukkan salah.')
             ->assertSee('value="'.$user->email.'"', false);
+    }
+
+    public function test_email_yang_tidak_terdaftar_menampilkan_pesan_yang_spesifik(): void
+    {
+        $this->followingRedirects()
+            ->from('/login')
+            ->post('/login', [
+                'email' => 'tidak-terdaftar@example.com',
+                'password' => 'password123',
+            ])
+            ->assertSee('Email tidak terdaftar.');
     }
 
     #[DataProvider('peranProvider')]

@@ -10,6 +10,8 @@ use App\Services\Moodle\MoodleLogParser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Schema;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer as XlsxWriter;
 use Tests\Support\FileUkuranPalsu;
 use Tests\TestCase;
 
@@ -50,6 +52,27 @@ class LogImportTest extends TestCase
         file_put_contents($path, $isi);
 
         return new UploadedFile($path, 'log-lms.csv', 'text/csv', null, true);
+    }
+
+    private function buatXlsx(array $baris): UploadedFile
+    {
+        $path = tempnam(sys_get_temp_dir(), 'log').'.xlsx';
+        $writer = new XlsxWriter;
+        $writer->openToFile($path);
+
+        foreach ($baris as $nilai) {
+            $writer->addRow(Row::fromValues($nilai));
+        }
+
+        $writer->close();
+
+        return new UploadedFile(
+            $path,
+            'log-lms.xlsx',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            null,
+            true
+        );
     }
 
     private function barisValid(array $ubah = []): array
@@ -361,6 +384,49 @@ class LogImportTest extends TestCase
         $this->assertSame(1, LogAktivitas::count());
     }
 
+    public function test_import_file_xlsx(): void
+    {
+        $file = $this->buatXlsx([
+            explode(';', self::HEADER),
+            $this->barisValid(),
+        ]);
+
+        $this->actingAs($this->admin())
+            ->post('/admin/log-import', ['file_csv' => $file])
+            ->assertSessionHas('success');
+
+        $this->assertSame(1, LogAktivitas::count());
+        $this->assertSame('log-lms.xlsx', ImportBatch::first()->nama_file);
+    }
+
+    public function test_format_selain_csv_dan_xlsx_menampilkan_notifikasi(): void
+    {
+        $file = UploadedFile::fake()->create(
+            'dokumen.docx',
+            10,
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        );
+
+        $this->followingRedirects()
+            ->from('/admin/dashboard')
+            ->actingAs($this->admin())
+            ->post('/admin/log-import', ['file_csv' => $file])
+            ->assertSee('Format file tidak sesuai. Unggah file CSV atau XLSX.');
+
+        $this->assertSame(0, ImportBatch::count());
+    }
+
+    public function test_file_xlsx_yang_rusak_menampilkan_notifikasi_error(): void
+    {
+        $file = UploadedFile::fake()->createWithContent('rusak.xlsx', 'bukan file XLSX');
+
+        $this->actingAs($this->admin())
+            ->post('/admin/log-import', ['file_csv' => $file])
+            ->assertSessionHas('error', 'Import gagal: File XLSX tidak valid atau tidak dapat dibaca.');
+
+        $this->assertSame(ImportBatch::STATUS_GAGAL, ImportBatch::first()->status);
+    }
+
     public function test_file_tanpa_header_ditolak(): void
     {
         // Hanya BOM, tanpa baris header sama sekali.
@@ -378,17 +444,17 @@ class LogImportTest extends TestCase
         $this->assertSame(0, LogAktivitas::count());
     }
 
-    public function test_file_nol_byte_ditolak_validasi_form(): void
+    public function test_file_nol_byte_ditolak_dengan_notifikasi_error(): void
     {
-        // File 0 byte ditolak lebih dulu oleh validasi, sebelum importer jalan.
+        // File kosong masuk ke importer dan mendapat pesan error, bukan diproses.
         $path = tempnam(sys_get_temp_dir(), 'log').'.csv';
         file_put_contents($path, '');
 
         $this->actingAs($this->admin())->post('/admin/log-import', [
             'file_csv' => new UploadedFile($path, 'nol.csv', 'application/octet-stream', null, true),
-        ])->assertSessionHasErrors('file_csv');
+        ])->assertSessionHas('error');
 
-        $this->assertSame(0, ImportBatch::count());
+        $this->assertSame(ImportBatch::STATUS_GAGAL, ImportBatch::first()->status);
     }
 
     // ------------------------------------------------------------- validasi form

@@ -12,6 +12,10 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\Exception\ReaderException;
+use OpenSpout\Reader\XLSX\Options;
+use OpenSpout\Reader\XLSX\Reader as XlsxReader;
 
 /**
  * Mengimpor file log LMS Moodle ke tabel log_aktivitas (FR-02, FR-03, FR-10).
@@ -45,13 +49,27 @@ class LogCsvImporter
     /**
      * Jalankan import. Mengembalikan batch berisi ringkasan hasil.
      */
-    public function import(string $pathToFile, User $admin): ImportBatch
-    {
-        $batch = $this->buatBatch($pathToFile, $admin);
+    public function import(
+        string $pathToFile,
+        User $admin,
+        ?string $format = null,
+        ?string $namaFile = null,
+    ): ImportBatch {
+        $format = strtolower($format ?? pathinfo($pathToFile, PATHINFO_EXTENSION));
+        $namaFile ??= basename($pathToFile);
+        $batch = $this->buatBatch($pathToFile, $admin, $namaFile);
 
-        $handle = @fopen($pathToFile, 'r');
-        if ($handle === false) {
-            return $this->gagalkan($batch, "File tidak bisa dibuka: {$pathToFile}");
+        if ($format === 'xlsx') {
+            try {
+                $handle = $this->xlsxKeCsv($pathToFile);
+            } catch (IOException|ReaderException) {
+                return $this->gagalkan($batch, 'File XLSX tidak valid atau tidak dapat dibaca.');
+            }
+        } else {
+            $handle = @fopen($pathToFile, 'r');
+            if ($handle === false) {
+                return $this->gagalkan($batch, "File tidak bisa dibuka: {$pathToFile}");
+            }
         }
 
         try {
@@ -298,13 +316,13 @@ class LogCsvImporter
         };
     }
 
-    private function buatBatch(string $pathToFile, User $admin): ImportBatch
+    private function buatBatch(string $pathToFile, User $admin, string $namaFile): ImportBatch
     {
         $path = null;
         try {
             $path = Storage::disk('local')->putFile('log-lms', new UploadedFile(
                 $pathToFile,
-                basename($pathToFile),
+                $namaFile,
                 null,
                 null,
                 true
@@ -316,10 +334,63 @@ class LogCsvImporter
 
         return ImportBatch::create([
             'admin_id' => $admin->id,
-            'nama_file' => basename($pathToFile),
+            'nama_file' => $namaFile,
             'path' => $path,
             'status' => ImportBatch::STATUS_MENUNGGU,
         ]);
+    }
+
+    /**
+     * Ubah baris pada worksheet pertama menjadi stream CSV sementara agar
+     * pemrosesan dan batas memori tetap sama dengan jalur impor CSV.
+     *
+     * @return resource
+     */
+    private function xlsxKeCsv(string $pathToFile)
+    {
+        $options = new Options;
+        $options->SHOULD_FORMAT_DATES = true;
+        $reader = new XlsxReader($options);
+        $handle = fopen('php://temp/maxmemory:2097152', 'w+b');
+        if ($handle === false) {
+            throw new \RuntimeException('Stream sementara untuk XLSX tidak dapat dibuka.');
+        }
+
+        $readerTerbuka = false;
+        try {
+            $reader->open($pathToFile);
+            $readerTerbuka = true;
+
+            foreach ($reader->getSheetIterator() as $sheet) {
+                foreach ($sheet->getRowIterator() as $row) {
+                    $nilai = array_map(static function ($cell): string {
+                        return match (true) {
+                            $cell instanceof \DateTimeInterface => $cell->format('d/m/Y H:i'),
+                            $cell instanceof \DateInterval => $cell->format('%H:%I:%S'),
+                            is_bool($cell) => $cell ? '1' : '0',
+                            default => (string) ($cell ?? ''),
+                        };
+                    }, $row->toArray());
+
+                    if (fputcsv($handle, $nilai, ';') === false) {
+                        throw new \RuntimeException('Baris XLSX gagal dikonversi.');
+                    }
+                }
+
+                break;
+            }
+        } catch (\Throwable $exception) {
+            fclose($handle);
+            throw $exception;
+        } finally {
+            if ($readerTerbuka) {
+                $reader->close();
+            }
+        }
+
+        rewind($handle);
+
+        return $handle;
     }
 
     /**

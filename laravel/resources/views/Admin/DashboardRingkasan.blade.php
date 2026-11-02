@@ -6,7 +6,7 @@
     $mkTerbanyakLog = $daftarMk->sortByDesc('log')->first();
 @endphp
 
-<div class="space-y-6 rounded-3xl bg-slate-100 p-5 lg:p-7">
+<div class="space-y-6 rounded-3xl bg-ivory p-5 lg:p-7">
 
     {{-- ------------------------------------------------ sapaan --}}
     <div class="flex flex-wrap items-start justify-between gap-4">
@@ -14,7 +14,7 @@
             <h2 class="text-2xl font-extrabold text-[#0B1B3D]">
                 Halo, {{ auth()->user()?->nama ?? 'Administrator' }} 👋
             </h2>
-            <p class="text-sm text-blue-600 mt-1">
+            <p class="text-sm text-royal mt-1">
                 Selamat datang kembali di panel kontrol akademik Anda.
             </p>
         </div>
@@ -29,7 +29,7 @@
         {{-- Mata kuliah (navy) --}}
         <div class="relative overflow-hidden rounded-2xl bg-[#0B1B3D] p-5 text-white shadow-md">
             <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-full bg-blue-500/30 flex items-center justify-center">
+                <div class="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center">
                     <i class="fa-solid fa-book"></i>
                 </div>
                 <p class="text-sm font-medium text-slate-200">Mata kuliah</p>
@@ -39,19 +39,19 @@
         </div>
 
         {{-- Kelas (biru) --}}
-        <div class="relative overflow-hidden rounded-2xl bg-blue-600 p-5 text-white shadow-md">
+        <div class="relative overflow-hidden rounded-2xl bg-royal p-5 text-white shadow-md">
             <div class="flex items-center gap-3">
                 <div class="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center">
                     <i class="fa-solid fa-layer-group"></i>
                 </div>
-                <p class="text-sm font-medium text-blue-50">Kelas</p>
+                <p class="text-sm font-medium text-white/80">Kelas</p>
             </div>
             <p class="text-4xl font-extrabold mt-3">{{ $ringkasan['kelas'] ?? 0 }}</p>
             <i class="fa-solid fa-chalkboard absolute -bottom-2 right-3 text-6xl text-white/10"></i>
         </div>
 
         {{-- Mahasiswa (amber) --}}
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-300 to-amber-400 p-5 text-[#0B1B3D] shadow-md">
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber to-[#D8942A] p-5 text-navy shadow-md">
             <div class="flex items-center gap-3">
                 <div class="w-11 h-11 rounded-full bg-white/50 flex items-center justify-center">
                     <i class="fa-solid fa-user-group"></i>
@@ -63,15 +63,15 @@
         </div>
 
         {{-- Baris log (biru muda) --}}
-        <div class="relative overflow-hidden rounded-2xl bg-blue-50 border border-blue-100 p-5 text-[#0B1B3D] shadow-md">
+        <div class="relative overflow-hidden rounded-2xl bg-cream border border-amber/30 p-5 text-navy shadow-md">
             <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-full bg-blue-500 flex items-center justify-center text-white">
+                <div class="w-11 h-11 rounded-full bg-royal flex items-center justify-center text-white">
                     <i class="fa-solid fa-database"></i>
                 </div>
                 <p class="text-sm font-semibold">Baris log</p>
             </div>
             <p class="text-4xl font-extrabold mt-3">{{ number_format($ringkasan['log'] ?? 0, 0, ',', '.') }}</p>
-            <i class="fa-solid fa-list absolute -bottom-2 right-3 text-6xl text-blue-200/50"></i>
+            <i class="fa-solid fa-list absolute -bottom-2 right-3 text-6xl text-royal/10"></i>
         </div>
     </div>
 
@@ -164,7 +164,7 @@
                 @endif
             </p>
             <button type="button" onclick="switchTab('uploadlog')"
-                class="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F3277] hover:bg-[#0B255B] px-4 py-2.5 text-xs font-semibold text-white transition-all">
+                class="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F3C8A] hover:bg-[#0B1B3D] px-4 py-2.5 text-xs font-semibold text-white transition-all">
                 Buka Upload Log <i class="fa-solid fa-arrow-right text-[10px]"></i>
             </button>
         </section>

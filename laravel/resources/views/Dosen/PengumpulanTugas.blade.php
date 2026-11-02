@@ -35,8 +35,8 @@
 
 <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
-        <h2 class="text-xl font-bold text-black">Pengumpulan Tugas</h2>
-        <p class="text-xs text-slate-400 mt-0.5">
+        <h2 class="text-xl font-bold text-navy">Pengumpulan Tugas</h2>
+        <p class="text-xs text-slate-500 mt-0.5">
             Tepat waktu berarti tugas dikumpulkan paling lambat 7 hari setelah tugas dibuat.
             Arahkan kursor ke kotak untuk melihat rincian tugasnya.
         </p>
@@ -50,7 +50,7 @@
     <div class="min-w-[200px]">
         <label for="tugas-mk" class="block text-[11px] uppercase tracking-wider text-slate-500 mb-1.5">Mata Kuliah</label>
         <select id="tugas-mk" name="mata_kuliah" onchange="this.form.submit()"
-            class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-black focus:border-indigo-500 focus:outline-none">
+            class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-navy focus:border-royal focus:ring-1 focus:ring-royal focus:outline-none">
             <option value="">Semua</option>
             @foreach ($rekapTugas['filter']['pilihanMataKuliah'] ?? [] as $mk)
                 <option value="{{ $mk['kode'] }}" @selected(($rekapTugas['filter']['mata_kuliah'] ?? null) === $mk['kode'])>
@@ -63,7 +63,7 @@
     <div class="min-w-[140px]">
         <label for="tugas-jenis" class="block text-[11px] uppercase tracking-wider text-slate-500 mb-1.5">Jenis</label>
         <select id="tugas-jenis" name="jenis" onchange="this.form.submit()"
-            class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-black focus:border-indigo-500 focus:outline-none">
+            class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-navy focus:border-royal focus:ring-1 focus:ring-royal focus:outline-none">
             <option value="">Semua</option>
             @foreach ($rekapTugas['filter']['pilihanJenis'] ?? [] as $jenis)
                 <option value="{{ $jenis }}" @selected(($rekapTugas['filter']['jenis'] ?? null) === $jenis)>{{ $jenis }}</option>
@@ -74,7 +74,7 @@
     <div class="min-w-[200px]">
         <label for="tugas-kelas" class="block text-[11px] uppercase tracking-wider text-slate-500 mb-1.5">Kelas</label>
         <select id="tugas-kelas" name="kelas_id" onchange="this.form.submit()"
-            class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-black focus:border-indigo-500 focus:outline-none">
+            class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-navy focus:border-royal focus:ring-1 focus:ring-royal focus:outline-none">
             <option value="">Semua</option>
             @foreach ($rekapTugas['filter']['pilihanKelas'] ?? [] as $k)
                 <option value="{{ $k['id'] }}" @selected((int) ($rekapTugas['filter']['kelas_id'] ?? 0) === (int) $k['id'])>
@@ -88,10 +88,10 @@
         <label for="tugas-cari" class="block text-[11px] uppercase tracking-wider text-slate-500 mb-1.5">Cari</label>
         <input id="tugas-cari" type="search" name="q" value="{{ $rekapTugas['filter']['q'] ?? '' }}"
             placeholder="Nama atau NIM"
-            class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-black placeholder:text-black focus:border-indigo-500 focus:outline-none">
+            class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-navy placeholder:text-slate-400 focus:border-royal focus:ring-1 focus:ring-royal focus:outline-none">
     </div>
 
-    <button type="submit" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm transition-colors">
+    <button type="submit" class="px-5 py-2.5 rounded-xl bg-royal hover:bg-navy text-white text-sm font-semibold transition-colors">
         <i class="fa-solid fa-magnifying-glass mr-1.5"></i>Cari
     </button>
 
@@ -99,14 +99,14 @@
         || ($rekapTugas['filter']['kelas_id'] ?? null) || ($rekapTugas['filter']['q'] ?? null))
      <button type="submit"
         onclick="window.location.href='{{ route('dosen.dashboard', ['tab' => 'pengumpulan-tugas']) }}'"
-        class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm transition-colors">
+        class="px-5 py-2.5 rounded-xl bg-royal hover:bg-navy text-white text-sm font-semibold transition-colors">
     <i class="fa-solid mr-1.5"></i> Reset
 </button>
     @endif
 </form>
 
 {{-- -------------------------------------------------- legenda --}}
-<div class="flex flex-wrap items-center gap-4 text-[11px] text-slate-400">
+<div class="flex flex-wrap items-center gap-4 text-[11px] text-slate-500">
     <span class="flex items-center gap-1.5">
         <span class="w-3 h-3 rounded bg-emerald-500"></span> Tepat waktu
     </span>
@@ -132,7 +132,7 @@
 </div>
 
 @if (! ($rekapTugas['kosong'] ?? true) && ($rekapTugas['jumlahMahasiswa'] ?? 0) > count($rekapTugas['baris']))
-    <div class="rounded-xl border border-amber-500/40 bg-amber-500/5 px-4 py-3 text-xs text-amber-400 flex items-start gap-2">
+    <div class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs text-amber-700 flex items-start gap-2">
         <i class="fa-solid fa-circle-info mt-0.5"></i>
         <span>
             Menampilkan {{ count($rekapTugas['baris']) }} dari {{ $rekapTugas['jumlahMahasiswa'] }} mahasiswa,
@@ -143,7 +143,7 @@
 @endif
 
 @if ($rekapTugas['kosong'] ?? true)
-    <div class="border-2 border-dashed border-slate-800 rounded-2xl p-12 text-center text-slate-600">
+    <div class="border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center text-slate-500 bg-white">
         <i class="fa-solid fa-inbox mb-2 text-3xl"></i>
         <p class="text-sm">Belum ada data pengumpulan tugas untuk pilihan ini.</p>
         <p class="text-xs mt-1">
@@ -153,30 +153,30 @@
     </div>
 @else
     {{-- -------------------------------------------------- matriks --}}
-    <div class="rounded-2xl border border-slate-300 bg-white overflow-hidden">
+    <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="text-xs border-collapse text-black">
+            <table class="text-xs border-collapse text-slate-700">
                 <thead>
-                    <tr>
-                        <th class="sticky left-0 z-20 bg-white px-4 py-2 text-left font-medium text-black whitespace-nowrap">
+                    <tr class="bg-slate-50">
+                        <th class="sticky left-0 z-20 bg-slate-50 px-4 py-2 text-left font-medium text-navy whitespace-nowrap">
                             Nama / NIM
                         </th>
                         @foreach ($rekapTugas['minggu'] as $minggu)
-                            <th class="px-1 py-2 text-center font-medium text-black whitespace-nowrap"
+                            <th class="px-1 py-2 text-center font-medium text-navy whitespace-nowrap"
                                 title="{{ $minggu['mulai'] }} · {{ $minggu['tugas'] }} tugas jatuh tempo">
                                 <span class="block">{{ $minggu['label'] }}</span>
-                                <span class="block text-[10px] font-normal text-black">{{ date('d/m', strtotime($minggu['mulai'])) }}</span>
+                                <span class="block text-[10px] font-normal text-slate-500">{{ date('d/m', strtotime($minggu['mulai'])) }}</span>
                             </th>
                         @endforeach
-                        <th class="px-3 py-2 text-center font-medium text-black whitespace-nowrap">Total</th>
+                        <th class="px-3 py-2 text-center font-medium text-navy whitespace-nowrap">Total</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200">
                     @foreach ($rekapTugas['baris'] as $mhs)
-                        <tr class="hover:bg-slate-100">
+                        <tr class="hover:bg-slate-50">
                             <td class="sticky left-0 z-10 bg-white px-4 py-2 whitespace-nowrap">
-                                <span class="text-black">{{ $mhs['nama'] }}</span>
-                                <span class="block font-mono text-[10px] text-black">{{ $mhs['nim'] }}</span>
+                                <span class="font-medium text-navy">{{ $mhs['nama'] }}</span>
+                                <span class="block font-mono text-[10px] text-slate-500">{{ $mhs['nim'] }}</span>
                             </td>
 
                             @foreach ($rekapTugas['minggu'] as $minggu)
@@ -202,7 +202,7 @@
                                 @endphp
                                 <td class="px-1 py-1 text-center">
                                     <span class="inline-flex items-center justify-center w-7 h-7 rounded-md {{ $gayaSel[$sel['status']] }} text-[11px] font-semibold
-                                        text-black"
+                                        text-navy"
                                         title="{{ trim($judul) }}">
                                         {{ $sel['status'] === App\Services\RekapTugas::TANPA_TUGAS ? '' : $terkumpul }}
                                     </span>
@@ -210,11 +210,11 @@
                             @endforeach
 
                             <td class="px-3 py-2 text-center whitespace-nowrap">
-                                <span class="text-emerald-400">{{ $mhs['tepat'] }}</span>
-                                <span class="text-slate-600">/</span>
-                                <span class="text-amber-400">{{ $mhs['terlambat'] }}</span>
-                                <span class="text-slate-600">/</span>
-                                <span class="text-rose-400">{{ $mhs['tidak'] }}</span>
+                                <span class="text-emerald-600">{{ $mhs['tepat'] }}</span>
+                                <span class="text-slate-400">/</span>
+                                <span class="text-amber-600">{{ $mhs['terlambat'] }}</span>
+                                <span class="text-slate-400">/</span>
+                                <span class="text-rose-600">{{ $mhs['tidak'] }}</span>
                             </td>
                         </tr>
                     @endforeach
@@ -232,27 +232,27 @@
     @endphp
 
     @if ($untukDiingatkan !== [])
-        <div class="rounded-2xl border border-black bg-white overflow-hidden">
-            <header class="px-5 py-4 border-b border-slate-800">
-                <h3 class="text-sm font-semibold text-black">
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <header class="px-5 py-4 border-b border-slate-100">
+                <h3 class="text-sm font-semibold text-navy">
                     <i class="fa-solid fa-bell text-slate-500 mr-1.5"></i>Contoh pesan yang bisa dikirim
                 </h3>
-                <p class="text-[11px] text-black mt-0.5">
+                <p class="text-[11px] text-slate-500 mt-0.5">
                     Hanya pratinjau. Sistem belum mengirim pesan apa pun (FR-24/FR-25 belum dikerjakan).
                 </p>
             </header>
-            <ul class="divide-y divide-slate-800/70">
+            <ul class="divide-y divide-slate-100">
                 @foreach ($untukDiingatkan as $mhs)
-                    <li class="px-5 py-3 text-xs text-slate-300">
-                        <span class="text-black font-medium">{{ $mhs['nama'] }}</span>
-                        <span class="font-mono text-[10px] text-black ml-1">{{ $mhs['nim'] }}</span>
-                        <p class="mt-1 text-black">
+                    <li class="px-5 py-3 text-xs text-slate-600">
+                        <span class="text-navy font-medium">{{ $mhs['nama'] }}</span>
+                        <span class="font-mono text-[10px] text-slate-500 ml-1">{{ $mhs['nim'] }}</span>
+                        <p class="mt-1 text-slate-600">
                             Halo {{ \Illuminate\Support\Str::before($mhs['nama'], ' ') }}, dari rekap pengumpulan tugas
                             {{ $kelasTerpilih->pluck('nama')->join(', ') }} tercatat
                             @if ($mhs['tidak'] > 0)
-                                <span class="text-rose-400">{{ $mhs['tidak'] }} minggu tanpa pengumpulan</span>@endif
+                                <span class="text-rose-600">{{ $mhs['tidak'] }} minggu tanpa pengumpulan</span>@endif
                             @if ($mhs['terlambat'] > 0)
-                                dan <span class="text-amber-400">{{ $mhs['terlambat'] }} pengumpulan terlambat</span>@endif
+                                dan <span class="text-amber-600">{{ $mhs['terlambat'] }} pengumpulan terlambat</span>@endif
                             . Mohon lengkapi ya.
                         </p>
                     </li>

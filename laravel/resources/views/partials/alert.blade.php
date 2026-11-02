@@ -26,11 +26,11 @@
 
 @if (session('status'))
     <div role="alert"
-        class="js-flash-alert mb-4 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3">
-        <i class="fa-solid fa-circle-info mt-0.5 text-blue-500"></i>
-        <p class="text-sm text-blue-800">{{ session('status') }}</p>
+        class="js-flash-alert mb-4 flex items-start gap-3 rounded-xl border border-amber/40 bg-cream px-4 py-3">
+        <i class="fa-solid fa-circle-info mt-0.5 text-royal"></i>
+        <p class="text-sm text-navy">{{ session('status') }}</p>
         <button type="button" onclick="this.closest('.js-flash-alert').remove()"
-            class="ml-auto text-blue-400 transition-colors hover:text-blue-600" aria-label="Tutup">
+            class="ml-auto text-royal/70 transition-colors hover:text-royal" aria-label="Tutup">
             <i class="fa-solid fa-xmark"></i>
         </button>
     </div>

@@ -298,7 +298,9 @@ class StatistikKelas
             $this->tempelHasil($baris, $analisis['hasil']);
             $this->susunKlaster($hasilKelas, $data);
             $this->hitungRataRata($hasilKelas, $data);
-        } elseif ($analisis['peringatan'] !== null) {
+        }
+
+        if ($analisis['peringatan'] !== null) {
             $data['peringatan'] = $analisis['peringatan'];
         }
 
@@ -354,10 +356,14 @@ class StatistikKelas
 
             if ($data['analisisAda'] && $data['rataEngagement'] !== null) {
                 $rataRataSemua[] = $data['rataEngagement'];
-            } elseif ($data['peringatan'] !== null) {
-                $peringatan[] = $data['peringatan'];
+            }
+
+            if ($data['peringatan'] !== null) {
+                $peringatan[$data['peringatan']] = true;
             }
         }
+
+        $peringatan = array_keys($peringatan);
 
         $ringkasan['mahasiswaUnik'] = (int) DB::table('kelas_mahasiswa')
             ->whereIn('kelas_id', $kelasList->pluck('id'))
@@ -617,22 +623,123 @@ class StatistikKelas
                 ];
             }
 
+            $hasilBaru = $hasilMahasiswa;
+            $hasilTersimpan = $this->hasilTersimpan($kodeMk, $jendela, $siswa);
+            $hasilMahasiswa = array_replace($hasilTersimpan, $hasilBaru);
+            $this->simpanHasil($kodeMk, $batchId, $jendela, $hasilBaru);
+
+            if ($hasilBaru === []) {
+                return [
+                    'berhasil' => $hasilMahasiswa !== [],
+                    'hasil' => $hasilMahasiswa,
+                    'peringatan' => 'Layanan analytics tidak mengembalikan hasil baru.'
+                        .($hasilTersimpan !== []
+                            ? ' Menampilkan hasil analitik tersimpan sebelumnya.'
+                            : ' Kolom engagement, klaster, dan risiko belum tersedia.'),
+                ];
+            }
+
             return ['berhasil' => true, 'hasil' => $hasilMahasiswa, 'peringatan' => null];
         } catch (ConnectionException|Response $e) {
+            $hasilTersimpan = $this->hasilTersimpan($kodeMk, $jendela, $siswa);
+
             if (! $this->analytics->isUnavailable($e)) {
                 return [
-                    'berhasil' => false,
-                    'hasil' => [],
-                    'peringatan' => 'Layanan analytics menolak data: '.$e->getMessage(),
+                    'berhasil' => $hasilTersimpan !== [],
+                    'hasil' => $hasilTersimpan,
+                    'peringatan' => 'Layanan analytics menolak data: '.$e->getMessage()
+                        .($hasilTersimpan !== [] ? ' Menampilkan hasil analitik tersimpan sebelumnya.' : ''),
                 ];
             }
 
             return [
-                'berhasil' => false,
-                'hasil' => [],
-                'peringatan' => 'Layanan analytics tidak bisa dihubungi. Statistik mentah tetap tampil, kolom engagement/klaster/risiko dikosongkan (FR-12a).',
+                'berhasil' => $hasilTersimpan !== [],
+                'hasil' => $hasilTersimpan,
+                'peringatan' => 'Layanan analytics tidak bisa dihubungi.'
+                    .($hasilTersimpan !== []
+                        ? ' Menampilkan hasil analitik tersimpan sebelumnya.'
+                        : ' Statistik mentah tetap tampil, kolom engagement/klaster/risiko dikosongkan (FR-12a).'),
             ];
         }
+    }
+
+    /**
+     * Simpan hasil terakhir agar tabel tetap memiliki nilai saat layanan
+     * analytics sementara tidak tersedia.
+     *
+     * @param  array{awal: string|null, akhir: string|null}  $jendela
+     * @param  array<string, array<string, mixed>>  $hasil
+     */
+    private function simpanHasil(string $kodeMk, int $batchId, array $jendela, array $hasil): void
+    {
+        if ($hasil === [] || $jendela['awal'] === null || $jendela['akhir'] === null) {
+            return;
+        }
+
+        $sekarang = now();
+        $baris = [];
+
+        foreach ($hasil as $kunciNim => $nilai) {
+            $baris[] = [
+                'kode_mata_kuliah' => $kodeMk,
+                'periode_awal' => $jendela['awal'],
+                'periode_akhir' => $jendela['akhir'],
+                'nim' => substr($kunciNim, 1),
+                'engagement_rate' => $nilai['engagement'],
+                'cluster_label' => $nilai['klaster'],
+                'risk_score' => $nilai['risk'],
+                'risk_level' => $nilai['level'],
+                'batch_id' => $batchId,
+                'created_at' => $sekarang,
+                'updated_at' => $sekarang,
+            ];
+        }
+
+        DB::table('hasil_analitik')->upsert(
+            $baris,
+            ['kode_mata_kuliah', 'periode_awal', 'periode_akhir', 'nim'],
+            ['engagement_rate', 'cluster_label', 'risk_score', 'risk_level', 'batch_id', 'updated_at'],
+        );
+    }
+
+    /**
+     * Ambil hasil tersimpan hanya untuk mahasiswa di kelas saat ini.
+     *
+     * @param  array{awal: string|null, akhir: string|null}  $jendela
+     * @param  list<array{nim: string, kelas_id: int, enrollment: Enrollment}>  $siswa
+     * @return array<string, array{engagement: ?float, klaster: ?string, risk: ?float, level: ?string}>
+     */
+    private function hasilTersimpan(string $kodeMk, array $jendela, array $siswa): array
+    {
+        if ($siswa === [] || $jendela['awal'] === null || $jendela['akhir'] === null) {
+            return [];
+        }
+
+        $nimList = array_column($siswa, 'nim');
+        $hasil = [];
+
+        foreach (DB::table('hasil_analitik')
+            ->where('kode_mata_kuliah', $kodeMk)
+            ->where('periode_awal', '<=', $jendela['akhir'])
+            ->where('periode_akhir', '>=', $jendela['awal'])
+            ->whereIn('nim', $nimList)
+            ->orderByDesc('updated_at')
+            ->get() as $baris) {
+            $kunci = '_'.$baris->nim;
+
+            if (isset($hasil[$kunci])) {
+                continue;
+            }
+
+            $hasil[$kunci] = [
+                'engagement' => $baris->engagement_rate === null ? null : (float) $baris->engagement_rate,
+                'klaster' => $baris->cluster_label,
+                'risk' => $baris->risk_score === null ? null : (float) $baris->risk_score,
+                'level' => $baris->risk_level,
+            ];
+        }
+
+        return $hasil;
     }
 
     /**

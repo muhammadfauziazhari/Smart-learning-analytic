@@ -25,7 +25,7 @@
     @endphp
 
     <div id="content-dashboard" @class([
-        'tab-content space-y-6 rounded-3xl bg-slate-100 p-5 lg:p-7',
+        'tab-content space-y-6 rounded-3xl bg-ivory p-5 lg:p-7',
         'hidden' => ($tabAktif ?? 'dashboard') !== 'dashboard',
     ])>
 
@@ -35,7 +35,7 @@
                 <h2 class="text-2xl font-extrabold text-[#0B1B3D]">
                     Halo, {{ auth()->user()?->name ?? 'Dosen' }} 👋
                 </h2>
-                <p class="text-sm text-blue-600 mt-1">
+                <p class="text-sm text-royal mt-1">
                     Berikut adalah ringkasan aktivitas pembelajaran kelas Anda.
                 </p>
                 <p class="text-[11px] text-slate-500 mt-1">
@@ -62,7 +62,7 @@
                             Mata kuliah
                         </label>
                         <select id="filter-mk" name="mata_kuliah"
-                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:border-blue-600 focus:outline-none">
+                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:border-royal focus:outline-none">
                             <option value="">Semua</option>
                             @foreach ($filter['pilihanMataKuliah'] as $mk)
                                 <option value="{{ $mk['kode'] }}" @selected($filter['mata_kuliah'] === $mk['kode'])>
@@ -78,7 +78,7 @@
                         Waktu
                     </label>
                     <select id="filter-jenis" name="jenis"
-                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:border-blue-600 focus:outline-none">
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:border-royal focus:outline-none">
                         <option value="">Semua</option>
                         @foreach ($filter['pilihanJenis'] as $jenis)
                             <option value="{{ $jenis }}" @selected($filter['jenis'] === $jenis)>{{ $jenis }}</option>
@@ -91,7 +91,7 @@
                         Kelas asal
                     </label>
                     <select id="filter-asal" name="asal"
-                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:border-blue-600 focus:outline-none">
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:border-royal focus:outline-none">
                         <option value="">Semua</option>
                         @foreach ($filter['pilihanAsal'] as $asal)
                             <option value="{{ $asal }}" @selected($filter['asal'] === $asal)>{{ $asal }}</option>
@@ -99,7 +99,7 @@
                     </select>
                 </div>
 
-                <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-[#0F3277] hover:bg-[#0B255B] text-white transition-all">
+                <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-[#0F3C8A] hover:bg-[#0B1B3D] text-white transition-all">
                     <i class="fa-solid fa-filter mr-1.5"></i>Terapkan
                 </button>
 
@@ -120,7 +120,7 @@
             {{-- Kelas diawasi (navy) --}}
             <div class="relative overflow-hidden rounded-2xl bg-[#0B1B3D] p-5 text-white shadow-md">
                 <div class="flex items-center gap-3">
-                    <div class="w-11 h-11 rounded-full bg-blue-500/30 flex items-center justify-center">
+                    <div class="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center">
                         <i class="fa-solid fa-chalkboard-user"></i>
                     </div>
                     <p class="text-sm font-medium text-slate-200">Kelas diawasi</p>
@@ -130,19 +130,19 @@
             </div>
 
             {{-- Mahasiswa unik (biru) --}}
-            <div class="relative overflow-hidden rounded-2xl bg-blue-600 p-5 text-white shadow-md">
+            <div class="relative overflow-hidden rounded-2xl bg-royal p-5 text-white shadow-md">
                 <div class="flex items-center gap-3">
                     <div class="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center">
                         <i class="fa-solid fa-user-group"></i>
                     </div>
-                    <p class="text-sm font-medium text-blue-50">Mahasiswa unik</p>
+                    <p class="text-sm font-medium text-white/80">Mahasiswa unik</p>
                 </div>
                 <p class="text-4xl font-extrabold mt-3">{{ number_format($ringkasan['mahasiswaUnik'], 0, ',', '.') }}</p>
                 <i class="fa-solid fa-users absolute -bottom-2 right-3 text-6xl text-white/10"></i>
             </div>
 
             {{-- Rata-rata engagement (amber) --}}
-            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-300 to-amber-400 p-5 text-[#0B1B3D] shadow-md">
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber to-[#D8942A] p-5 text-navy shadow-md">
                 <div class="flex items-center gap-3">
                     <div class="w-11 h-11 rounded-full bg-white/50 flex items-center justify-center">
                         <i class="fa-solid fa-chart-line"></i>
@@ -157,13 +157,13 @@
             <div @class([
                 'relative overflow-hidden rounded-2xl p-5 shadow-md border',
                 'bg-rose-50 border-rose-200 text-rose-700' => $ringkasan['risikoTinggi'] > 0,
-                'bg-blue-50 border-blue-100 text-[#0B1B3D]' => $ringkasan['risikoTinggi'] <= 0,
+                'bg-cream border-amber/40 text-navy' => $ringkasan['risikoTinggi'] <= 0,
             ])>
                 <div class="flex items-center gap-3">
                     <div @class([
                         'w-11 h-11 rounded-full flex items-center justify-center text-white',
                         'bg-rose-500' => $ringkasan['risikoTinggi'] > 0,
-                        'bg-blue-500' => $ringkasan['risikoTinggi'] <= 0,
+                        'bg-royal' => $ringkasan['risikoTinggi'] <= 0,
                     ])>
                         <i class="fa-solid fa-triangle-exclamation"></i>
                     </div>
@@ -247,13 +247,13 @@
                     @endif
                 </p>
                 <a href="{{ route('dosen.dashboard', ['tab' => 'ews']) }}"
-                    class="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F3277] hover:bg-[#0B255B] px-4 py-2.5 text-xs font-semibold text-white transition-all">
+                    class="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F3C8A] hover:bg-[#0B1B3D] px-4 py-2.5 text-xs font-semibold text-white transition-all">
                     Lihat Rekomendasi <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </a>
             </section>
         </div>
 
-        {{-- Komponen aktivitas masih bertema gelap: dibungkus panel navy --}}
+        {{-- Komponen aktivitas sudah bertema terang dan menyatu dengan panel putih. --}}
         @if (($aktivitas['totalAkses'] ?? 0) > 0 || ($aktivitas['login']['hari'] ?? 0) > 0)
             <div class="rounded-2xl bg-white p-5 shadow-sm">
                 @include('components.analitik.aktivitas', ['aktivitas' => $aktivitas])
@@ -354,10 +354,10 @@
         @endif
 
         {{-- ------------------------------------------------ per kelas --}}
-        {{-- blok-kelas masih bertema gelap: dibungkus panel navy --}}
+        {{-- blok-kelas sudah bertema terang, jadi cukup panel putih biasa. --}}
         @if ($kelas !== [])
             <section class="rounded-2xl bg-white p-5 shadow-sm space-y-6">
-                <h3 class="text-sm font-bold text-white">Performa Kelas</h3>
+                <h3 class="text-sm font-bold text-navy">Performa Kelas</h3>
                 @foreach ($kelas as $k)
                     @include('components.analitik.blok-kelas', ['k' => $k, 'tagna' => $k['sumberAkses']])
                 @endforeach

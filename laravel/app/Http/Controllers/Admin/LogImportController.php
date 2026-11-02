@@ -29,28 +29,32 @@ class LogImportController extends Controller
     }
 
     /**
-     * Terima file CSV log LMS dari form Upload Log (FR-06).
+     * Terima file CSV/XLSX log LMS dari form Upload Log (FR-06).
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'file_csv' => [
                 'required',
                 'file',
-                'mimetypes:text/plain,text/csv,application/csv,application/vnd.ms-excel',
-                // Ukuran TIDAK dibatasi di sini. File log nyata bisa
-                // ratusan MB, dan `fgetcsv` di importer memprosesnya
-                // baris per baris, bukan memuat seluruh isi ke memori.
-                // Batas nyatanya ada di php.ini (upload_max_filesize dan
-                // post_max_size), bukan di aturan validator.
             ],
         ], [], [
             'file_csv' => 'file log',
         ]);
 
-        $file = $request->file('file_csv');
+        $file = $validated['file_csv'];
+        $format = strtolower($file->getClientOriginalExtension());
 
-        $batch = $this->importer->import($file->getRealPath(), $request->user());
+        if (! in_array($format, ['csv', 'xlsx'], true)) {
+            return back()->with('error', 'Format file tidak sesuai. Unggah file CSV atau XLSX.');
+        }
+
+        $batch = $this->importer->import(
+            $file->getRealPath(),
+            $request->user(),
+            $format,
+            $file->getClientOriginalName(),
+        );
 
         if ($batch->status === ImportBatch::STATUS_GAGAL) {
             return back()

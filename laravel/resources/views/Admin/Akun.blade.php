@@ -4,19 +4,19 @@
 
 @php
     // Kelas dasar input, dipakai berulang. Warna border error ditambahkan per field.
-    $inputDasar = 'w-full bg-slate-50 border rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 focus:outline-none transition-all';
+    $inputDasar = 'w-full bg-slate-50 border rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-royal focus:ring-2 focus:ring-royal/15 focus:outline-none transition-all';
     $labelDasar = 'block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5';
-    $inputKecil = 'w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-800 focus:bg-white focus:border-blue-600 focus:outline-none';
-    $tombolSekunder = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:border-blue-300 hover:bg-blue-50 text-[11px] font-semibold text-slate-600 hover:text-blue-700 transition-all';
+    $inputKecil = 'w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-800 focus:bg-white focus:border-royal focus:outline-none';
+    $tombolSekunder = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:border-amber/50 hover:bg-cream text-[11px] font-semibold text-slate-600 hover:text-royal transition-all';
 @endphp
 
-<div class="space-y-6 rounded-3xl bg-slate-100 p-5 lg:p-7">
+<div class="space-y-6 rounded-3xl bg-ivory p-5 lg:p-7">
 
     {{-- ------------------------------------------------ header --}}
     <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
             <h2 class="text-2xl font-extrabold text-[#0B1B3D]">Kelola Akun</h2>
-            <p class="text-sm text-blue-600 mt-1">
+            <p class="text-sm text-royal mt-1">
                 Buat dan atur akun Dosen serta Kaprodi.
             </p>
             <p class="text-[11px] text-slate-500 mt-1">
@@ -63,7 +63,7 @@
     {{-- ============================================================ FORM --}}
     <section class="rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
         <header class="flex items-center gap-3 px-5 py-4 border-b border-slate-100">
-            <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+            <div class="w-9 h-9 rounded-xl bg-cream text-royal flex items-center justify-center">
                 <i class="fa-solid fa-user-plus text-sm"></i>
             </div>
             <h3 class="text-sm font-bold text-[#0B1B3D]">Buat Akun Baru</h3>
@@ -134,7 +134,7 @@
 
             <div class="flex justify-end">
                 <button type="submit"
-                    class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#0F3277] hover:bg-[#0B255B] text-white text-sm font-semibold shadow-md hover:shadow-lg shadow-blue-950/20 transition-all active:scale-[0.99]">
+                    class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#0F3C8A] hover:bg-[#0B1B3D] text-white text-sm font-semibold shadow-md hover:shadow-lg shadow-blue-950/20 transition-all active:scale-[0.99]">
                     <i class="fa-solid fa-plus text-xs"></i>Buat Akun
                 </button>
             </div>
@@ -165,7 +165,7 @@
             </select>
         </div>
         <button type="submit"
-            class="px-5 py-2.5 rounded-xl bg-[#0F3277] hover:bg-[#0B255B] text-white text-xs font-semibold transition-all">
+            class="px-5 py-2.5 rounded-xl bg-[#0F3C8A] hover:bg-[#0B1B3D] text-white text-xs font-semibold transition-all">
             <i class="fa-solid fa-filter mr-1.5"></i>Terapkan
         </button>
         @if (request()->hasAny(['q', 'role']))
@@ -208,7 +208,7 @@
                                 <div class="flex items-center gap-3">
                                     <div @class([
                                         'w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0',
-                                        'bg-gradient-to-tr from-blue-500 to-blue-700 text-white' => $a->is_active,
+                                        'bg-gradient-to-tr from-sapphire to-royal text-white' => $a->is_active,
                                         'bg-slate-200 text-slate-500' => ! $a->is_active,
                                     ])>
                                         {{ str($a->nama)->substr(0, 2)->upper() }}
@@ -234,7 +234,7 @@
                                     $gaya = match ($a->role) {
                                         'admin' => 'bg-slate-100 text-slate-600 border-slate-200',
                                         'kaprodi' => 'bg-emerald-50 text-emerald-600 border-emerald-200',
-                                        default => 'bg-blue-50 text-blue-600 border-blue-200',
+                                        default => 'bg-cream text-royal border-amber/30',
                                     };
                                 @endphp
                                 <span class="text-[11px] font-semibold capitalize rounded-full border px-2.5 py-0.5 {{ $gaya }}">{{ $a->role }}</span>
@@ -275,7 +275,7 @@
 
                                                     <div class="max-h-56 overflow-y-auto space-y-0.5 pr-1">
                                                         @foreach ($mataKuliah as $mk)
-                                                            <label class="flex items-start gap-2.5 text-[11px] text-slate-600 hover:bg-blue-50 rounded-lg px-2 py-1.5 cursor-pointer">
+                                                            <label class="flex items-start gap-2.5 text-[11px] text-slate-600 hover:bg-cream rounded-lg px-2 py-1.5 cursor-pointer">
                                                                 <input type="checkbox" name="mata_kuliah[]" value="{{ $mk->id }}"
                                                                     @checked(in_array($mk->id, $terpilih, false))
                                                                     class="mt-0.5 rounded border-slate-300 accent-[#0F3C8A]">
@@ -292,7 +292,7 @@
 
                                                     <div class="flex gap-2 pt-2">
                                                         <button type="submit"
-                                                            class="flex-1 px-3 py-2 rounded-xl bg-[#0F3277] hover:bg-[#0B255B] text-white text-xs font-semibold transition-colors">
+                                                            class="flex-1 px-3 py-2 rounded-xl bg-[#0F3C8A] hover:bg-[#0B1B3D] text-white text-xs font-semibold transition-colors">
                                                             Simpan Akses
                                                         </button>
                                                     </div>
@@ -301,14 +301,14 @@
                                         </div>
                                     </details>
                                 @else
-                                    <span class="text-slate-300 text-[11px]">—</span>
+                                    <span class="text-slate-400 text-[11px]">-</span>
                                 @endif
                             </td>
                             <td class="px-5 py-3">
                                 <div class="flex items-center justify-end gap-2">
                                     <details class="relative">
                                         <summary class="{{ $tombolSekunder }} cursor-pointer list-none">
-                                            <i class="fa-solid fa-pen text-blue-500"></i>
+                                            <i class="fa-solid fa-pen text-royal"></i>
                                         </summary>
                                         <div class="absolute right-0 mt-2 w-80 rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl shadow-slate-900/10 z-20">
                                             <form method="POST" action="{{ route('admin.akun.update', $a) }}" class="space-y-3">
@@ -333,7 +333,7 @@
                                                     Akun aktif
                                                 </label>
                                                 <button type="submit"
-                                                    class="w-full px-3 py-2 rounded-xl bg-[#0F3277] hover:bg-[#0B255B] text-white text-xs font-semibold transition-colors">
+                                                    class="w-full px-3 py-2 rounded-xl bg-[#0F3C8A] hover:bg-[#0B1B3D] text-white text-xs font-semibold transition-colors">
                                                     Simpan
                                                 </button>
                                             </form>

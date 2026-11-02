@@ -5,6 +5,8 @@
 @section('page-title', 'Dashboard')
 
 @section('content')
+    @include('partials.alert')
+
     {{--
         Semua menu Admin hidup sebagai tab di dalam satu halaman, supaya
         berpindah bagian tidak memuat ulang halaman.

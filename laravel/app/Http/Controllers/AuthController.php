@@ -76,8 +76,15 @@ class AuthController extends Controller
 
         RateLimiter::hit($kunci, self::JEDA_PERCOBAAN_DETIK);
 
+        $user = User::query()->where('email', $kredensial['email'])->first();
+        $pesanEror = match (true) {
+            $user === null => 'Email tidak terdaftar.',
+            ! $user->is_active => 'Akun Anda tidak aktif. Hubungi administrator.',
+            default => 'Password yang Anda masukkan salah.',
+        };
+
         return back()->withErrors([
-            'email' => 'Email atau password yang Anda masukkan salah.',
+            'email' => $pesanEror,
         ])->onlyInput('email');
     }
 
